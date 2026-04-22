@@ -50,6 +50,24 @@ The PCIe speed lock is enforced in the signed VBIOS. Without a firmware modifica
 
 Every known software-only runtime path has been independently tested and eliminated — `setpci` write to LnkCap2 is rejected, MMIO BAR0 access to the link registers is PROT-protected on GA100, upstream root port retrains don't change what the endpoint advertises, and the Falcon PRIV register that manipulates the speed bits is not host-addressable. The full test methodology and results are documented in [Runtime PCIe Speed Unlock — Attempted & Failed](runtime-pcie-unlock-attempt.md).
 
+**Primary PCI Device ID Reprogramming — Not Demonstrated**
+
+The CMP 170HX's primary PCI Device ID remains fixed as `10DE:20C2` in every publicly documented production-card experiment so far. By contrast, the PCI Subsystem ID is clearly more flexible: cross-flashed signed VBIOSes and engineering-sample firmware work show that subsystem identity can change without altering the silicon's underlying primary Device ID. In other words, the community has demonstrated **rebranding at the subsystem/firmware layer**, but not **arbitrary reprogramming of the GPU's main Device ID**.
+
+The leaked A100 GA100-883 P1001-B02 schematic suggests why. On schematic page 15, the strap group includes `VGA_DEVICE`, `PCIE_CFG`, and `DEVID_SEL`, controlled by `STRAP3`, `STRAP4`, and `STRAP5`. This shows that Ampere boards still use strap resistors for some early-boot configuration, just as older NVIDIA boards did. But the available evidence does **not** support the older Pascal-era model where the full Device ID is simply encoded by a resistor pattern on the PCB and can be rewritten arbitrarily by moving parts around.
+
+The most likely interpretation is narrower: `DEVID_SEL` appears to be a **selector bit** between predefined identities such as "original" and "rebrand," while the actual primary Device ID exposed on the bus is still constrained by silicon state, fuse state, or secure early-boot firmware. That interpretation fits three independent observations:
+
+* engineering-sample reports indicate the Subsystem ID can be changed while the primary Device ID stays hardware-fixed
+* the schematic names the strap `DEVID_SEL`, not a multi-bit full PCI ID field
+* modern NVIDIA secure boot pushes much of device configuration into signed devinit/Falcon-controlled initialization rather than leaving it entirely to passive board straps
+
+So, **could `DEVID_SEL` distinguish A100 versus CMP 170HX?** Possibly, but this remains unproven. It is a reasonable inference that A100 corresponds to an "original" identity and CMP 170HX to a "rebrand" identity, but no public strap-swap experiment on a retail 170HX has yet shown the card enumerating with an A100-class primary Device ID after changing only the resistor population.
+
+The same caution applies to memory straps. The schematic confirms that `STRAP0`–`STRAP2` select HBM vendor/package configurations, but that does not by itself prove that unused physical capacity can be surfaced just by changing resistor states. Usable VRAM capacity may also depend on firmware training tables, memory init code, and possible fuse limits. Claims that an undocumented strap pattern would expose 32 GB or 40 GB on a 170HX are therefore still speculative.
+
+**Current bottom line:** the primary Device ID appears to be **hardware-rooted and not publicly bypassed**. The strap network likely participates in selecting between a small number of board personas, but there is no confirmed method today to turn a production CMP 170HX into an arbitrary PCI Device ID by resistor changes alone.
+
 **FMA Throttle at Firmware Level — Not Bypassed**
 
 The FMA throttle persists in the firmware. The application-layer workaround routes around it but does not remove it. Any workload that cannot be modified to avoid FMA instructions (standard binaries, closed-source software) will still encounter throttled FP32 performance.
