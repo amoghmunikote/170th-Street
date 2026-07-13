@@ -78,10 +78,10 @@ The community recognizes NVLink as a superior alternative to PCIe for multi-GPU 
 
 **Active Development**
 
-Community members are actively exploring practical solutions:
+The community is actively exploring practical solutions:
 
-- **Custom Single-Slot Cooling with 8-way NVLink:** Developer jonpry_77715 is working on compact thermal solutions specifically designed for single-slot NVLink-enabled configurations. This would allow building denser multi-GPU systems with full NVLink bandwidth.
-- **PCIe-based Alternatives:** Discussion of using PCIe switches and bridges as an interim solution while fuse-level NVLink enablement remains blocked. A 4-way NVLink mesh configuration provides approximately 200 GB/s of interconnect bandwidth.
+- **Custom Single-Slot Cooling with 8-way NVLink:** Compact thermal solutions specifically designed for single-slot NVLink-enabled configurations are under development. This would allow building denser multi-GPU systems with full NVLink bandwidth without requiring dual-slot spacing per GPU.
+- **PCIe-based Alternatives:** PCIe switches and bridges are being evaluated as an interim solution while fuse-level NVLink enablement remains blocked. A 4-way NVLink mesh configuration provides approximately 200 GB/s of interconnect bandwidth.
 
 **Scalability Perspective**
 
