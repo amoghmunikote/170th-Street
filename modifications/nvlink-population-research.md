@@ -127,13 +127,19 @@ Several research directions have been explored or proposed:
 
 **Current Status**
 
-As of 2026, NVLink remains disabled on all known CMP 170HX cards. No successful unlock has been publicly documented. The barrier is the fuse-level security in the GPU silicon, not missing components or firmware limitations.
+As of June 2026, NVLink remains disabled on all production CMP 170HX cards due to fuse-level security. However, active research efforts are underway in the community:
+
+**Ongoing Development:**
+- 🔧 **PCIe NVLink Bridge Development**: Community members (notably jonpry_77715) are actively designing and building custom NVLink bridge adapters for PCIe cards. PCB designs are in progress with target completion expected by end of June 2026.
+- 📊 **Schematic Analysis**: Complete A100 schematics are being used to guide PCIe bridge development. Reverse engineering of existing commercial NVLink bridges is ongoing.
+- 🎯 **Configuration Research**: The primary technical challenge identified is "configuring the nvlink" — the bridge hardware can be built, but enabling it on the 170HX requires solving the fuse-level barrier or finding a firmware workaround.
 
 **Research Status:**
 - ❌ **HULK Key Acquisition**: No public access to NVIDIA's HULK cryptographic keys
 - ❌ **Silicon Modification**: No publicly documented attempts or successes
 - ❌ **Firmware Exploit**: Ampere generation lacks known exploits for fuse-level access
-- ⏳ **Component Population Study**: Would be worth doing for completeness, but only after fuse-level barrier is resolved
+- 🔧 **Component Population Study**: Community members have populated all missing NVLink components; the limiting factor remains the fuse-level security barrier, not component availability
+- 🚧 **PCIe Bridge Hardware**: Active development, not yet publicly released
 
 The missing components are a secondary concern — valuable to document and understand, but solving the fuse-level disablement is the prerequisite to making component population meaningful.
 

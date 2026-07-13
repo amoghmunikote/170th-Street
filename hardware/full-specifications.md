@@ -44,11 +44,11 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 | ------------------------------ | ---------------------------------- |
 | Memory Type                    | HBM2e                              |
 | Memory Capacity                | 8 GB (10GB and 16GB variants exist) |
-| Memory Bus Width               | 4,096-bit                          |
+| Memory Bus Width               | 4,096-bit (8GB variant); 5,120-bit (10GB variant) |
 | Memory Clock                   | 1,458 MHz (729 MHz effective base) |
-| Memory Bandwidth (theoretical) | 1,493 GB/s                         |
-| Memory Bandwidth (measured)    | \~1,355 GB/s (real-world clpeak)   |
-| Memory Stacks                  | 2 HBM2e stacks                     |
+| Memory Bandwidth (theoretical) | 1,493 GB/s (8GB); ~1,865 GB/s (10GB estimated) |
+| Memory Bandwidth (measured)    | \~1,355 GB/s (8GB, real-world clpeak) |
+| Memory Stacks                  | 2 HBM2e stacks (8GB); 5 HBM2e stacks (10GB variant) |
 | ECC                            | Disabled                           |
 | Resizable BAR                  | Present but limited to 64 MiB      |
 

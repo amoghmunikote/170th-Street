@@ -1,8 +1,8 @@
 # History & Timeline
 
-**March 2021 — First Leak** GPU shortage speculation leads to the first credible reports of a dedicated mining GPU built on GA100 silicon. Leaker Kopite7kimi reports NVIDIA is developing a top-end CMP card based on Ampere A100 technology. No official confirmation from NVIDIA.
-
 **February 18, 2021 — Official CMP Announcement** NVIDIA publishes a blog post announcing the CMP (Cryptocurrency Mining Processor) product line. Four models are revealed: the 30HX, 40HX, 50HX, and 90HX — all based on existing Turing and lower-end Ampere silicon and manufactured by board partners. The CMP 170HX is not mentioned. NVIDIA's stated reason: "GeForce is made for gaming. CMP is made for mining."
+
+**March 2021 — First Leak** GPU shortage speculation leads to the first credible reports of a dedicated mining GPU built on GA100 silicon. Leaker Kopite7kimi reports NVIDIA is developing a top-end CMP card based on Ampere A100 technology. No official confirmation from NVIDIA.
 
 **September 1, 2021 — CMP 170HX Appears in China** The CMP 170HX surfaces on the Chinese market with no official announcement from NVIDIA. A user on Zhihu (Chinese Q\&A platform) posts the first real-world photographs and benchmark results, showing 164 MH/s on Ethash at 250W. The card is priced at approximately $4,700 USD. Tech outlets notice immediately — this is GA100 silicon, the same die as the A100. The card connects via a single 8-pin connector and is completely passive-cooled.
 
