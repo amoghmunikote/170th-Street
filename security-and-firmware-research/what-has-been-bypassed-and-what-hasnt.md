@@ -38,6 +38,10 @@ OMGVflash goes slightly further by sending MUTEX commands directly to Falcon via
 
 **What these tools cannot do:** flash a modified, unsigned, or custom-authored VBIOS. The bypass exists entirely in host-side validation in `nvflash.exe`; the Falcon HS bootrom still validates the firmware cryptographically at next POST and rejects any tampered ROM. Both authors document this limit explicitly in their repos. Veii's roadmap: *"3000/4000 will require signed bioses... Later we can start and focus on Ampere and Ada"* — that "later" has not arrived.
 
+**VBIOS Integrity: Davies-Meyer MAC, Not RSA**
+
+VBIOS integrity is verified using a Davies-Meyer symmetric MAC (Message Authentication Code), not RSA-3072 asymmetric signatures. The MAC protects specific VBIOS ranges as defined in the RFRD manifest — typically 0x2200–0x43A00 for CMP 170HX, with variations by SKU. Regions outside MAC coverage (power limits at 0x45E45, CTRL_OPT fuse table, padding) can be modified without cryptographic key access via SPI programmer.
+
 **What Has Not Been Bypassed**
 
 **Ampere VBIOS Signature Check — Not Bypassed**

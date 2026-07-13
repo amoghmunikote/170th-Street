@@ -14,6 +14,8 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 | Manufacturing Process | TSMC 7nm N7 FinFET                        |
 | Transistors           | 54.2 billion                              |
 | Die Size              | 826 mm²                                   |
+| **PCI Device ID**     | **0x20C2 (primary) / 0x2082 (variant)**   |
+| **PCI Subsystem ID**  | **0x1585 (8GB/16GB/300W) / 0x1557 (10GB)** |
 | Release Date          | September 1, 2021                         |
 | Original MSRP         | $4,299 USD                                |
 | Current Used Price    | $200–400 USD                              |
