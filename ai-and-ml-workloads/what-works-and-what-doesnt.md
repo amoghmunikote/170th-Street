@@ -75,11 +75,21 @@ Several otherwise viable workloads are limited by the 0.85 GB/s PCIe bandwidth r
 
 For workloads that can load all data into VRAM once and stay there, PCIe bandwidth is irrelevant. For streaming workloads that constantly feed new data from system RAM, the PCIe bottleneck is severe.
 
+**Unlock Status and What's Been Validated**
+
+Community testing has validated several aspects of the unlock potential:
+
+- **BAR0 writes work** and persist through driver reload, enabling configuration changes without GPU reboot
+- **Tensor core unlock confirmed** at 200 TFLOPS (vs. FMA-throttled throughput) for matrix operations
+- **Memory geometry register modifications work** when using direct Falcon register writes (not the indirect engine, which truncates addresses to 16-bit causing writes to wrong offsets)
+- **Compute state modifications problematic** — attempts to modify Falcon state directly result in uninitialized driver state rather than the desired behavior
+- **Persistence model** — BAR0 changes survive driver reload but not full power cycles or DEVINIT; may require exploit rerun after reboot
+
 **Memory Variants and Constraints**
 
-The CMP 170HX is available in multiple memory configurations: **8GB** (original), **10GB** (confirmed production variant), and potentially **16GB** (through VBIOS modification). All variants use the same 4,096-bit HBM2e bus but with different die capacities controlled by GSP firmware.
+The CMP 170HX is available in multiple hardware configurations: **8GB** (original, 56 SMs), **10GB** (confirmed production, 70 SMs), and potentially **16GB** (theoretically achievable, not yet confirmed in production). These are hardware binning variants, not just firmware differences. The 8GB variant operates on a 4,096-bit bus while the 10GB variant uses a 5,120-bit bus.
 
-**8GB Configuration:**
+**8GB Configuration (56 SMs):**
 Sufficient for:
 * Any 3B–7B model at Q4–Q8 quantization
 * FDTD grids up to approximately 420³ cells
@@ -92,16 +102,18 @@ Insufficient for:
 * Large batch inference with long context windows
 * Multiple models loaded simultaneously
 
-**10GB Configuration:**
+**10GB Configuration (70 SMs):**
 - Enables 13B parameter models at Q4/Q5 quantization
-- Improved bandwidth characteristics vs 8GB
-- Enables more flexible context windows
-- PCIe bottleneck remains unchanged
+- Improved bandwidth (~1,865 GB/s theoretical) vs 8GB due to 5,120-bit bus and 5 HBM2e stacks
+- Enables more flexible context windows and batch sizes
+- PCIe bottleneck remains unchanged (still Gen 1 x4)
+- Additional compute capability (70 vs 56 SMs) benefits matrix operations
 
-**16GB Configuration (Theoretical):**
+**16GB Configuration (Theoretically Achievable):**
 - Would support 70B models at INT4 quantization
-- Currently requires VBIOS modification and GSP firmware signature bypass
-- Not yet publicly confirmed as working
+- Requires matching hardware configuration with additional HBM2e stacks (not confirmed in production)
+- Would also require VBIOS modification and GSP firmware signature bypass
+- Not yet publicly confirmed as working in production
 
 **Recommended Use Cases by User Type**
 

@@ -132,18 +132,39 @@ bash
 
 The server exposes a `/v1/chat/completions` endpoint compatible with any OpenAI client library.
 
+**Performance Characteristics & Bottlenecks**
+
+The critical insight for LLM inference on the CMP 170HX is understanding which metric matters:
+
+| Workload Phase     | Bottleneck           | Performance Driver  | CMP 170HX Position |
+| ------------------ | -------------------- | ------------------- | ------------------- |
+| **Token generation (decode)** | Memory bandwidth     | 1,355 GB/s bandwidth | Excellent — competes with consumer cards |
+| **Prompt processing (prefill)** | Compute throughput   | FMA throughput       | Poor — 0.39 TFLOPS FMA (FMA disabled) |
+| **Scalar FP16 perf** | Memory bandwidth     | ~50 TFLOPS (locked)  | 2/3 performance of high-end datacenter GPUs |
+| **After unlock (tensor cores)** | Memory bandwidth     | 200 TFLOPS            | Significant improvement for matrix operations |
+
+**For batch size 1 token generation (the primary inference use case)**, token generation speed is the limiting factor and depends almost entirely on memory bandwidth as the GPU reads model weights sequentially. The CMP 170HX's 1,355 GB/s bandwidth makes it highly competitive for this workload despite compute throttling.
+
 **Performance Expectations**
 
-Based on the arXiv paper results and community testing, expected performance at FP16/Q4 quantization on a 7-8B model:
+Based on community testing and benchmarking:
 
 | Metric                   | Expected Range     | Notes                                         |
 | ------------------------ | ------------------ | --------------------------------------------- |
 | Token generation (tg)    | 15–35 tokens/sec   | Memory-bandwidth bound — CMP 170HX's strength |
-| Prompt processing (pp)   | 100–400 tokens/sec | More compute-dependent                        |
+| Prompt processing (pp)   | 100–400 tokens/sec | More compute-dependent, variable with FMA    |
 | VRAM usage (7B Q4\_K\_M) | \~5.5 GB           | Fits within 8GB                               |
 | Power at load            | \~160–180W         | Integer + memory dominant workload            |
 
-Token generation speed is the most user-relevant metric for interactive use. The CMP 170HX's 1,355 GB/s bandwidth makes it competitive here because decode is almost purely memory-bandwidth bound at batch size 1 — the GPU is continuously reading model weights from VRAM to generate each token.
+**Multi-GPU Scaling and PCIe Limitations**
+
+With multiple CMP 170HX cards, tensor parallelism is possible but severely limited by PCIe bandwidth. Each 170HX is connected via PCIe Gen 1 x4 (~0.8 GB/s per card), and inter-GPU communication during tensor parallelism can saturate this link quickly. For practical multi-GPU configurations:
+
+- **2 cards**: Workable if model can be split evenly; NVLink would be ideal but remains disabled
+- **3+ cards**: PCIe Gen 1 becomes the primary bottleneck; tensor parallelism performance degrades as GPUs wait for each other
+- **Alternative**: Use distributed inference (different GPUs serving different requests) rather than tensor parallelism
+
+With unlock and higher tensor compute (200 TFLOPS per card), 4 cards approach ~1 petaflop of peak tensor compute, but PCIe bandwidth remains the practical limiting factor for coordinated multi-GPU inference workloads.
 
 **Memory Strategy (8GB Variant)**
 

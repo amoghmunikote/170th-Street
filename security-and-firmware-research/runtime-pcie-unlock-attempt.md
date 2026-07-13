@@ -188,6 +188,18 @@ sudo nvapeek -c 1 0x8808c   # should return ... (PROT-blocked)
 
 If your card shows any different result — for example, LnkCap2 returning a non-`0x00000002` value, or `nvapeek` returning something other than `...` at offset `0x8808c` — please open an issue on the project's GitHub. A card behaving differently is the first clue that might unlock the problem.
 
-**Credits**
+**Community Workarounds While Runtime Unlock Remains Blocked**
+
+Given that runtime PCIe speed unlock remains impractical, the community has developed interim solutions for multi-GPU workloads:
+
+- **PCIe Retimer Solutions:** Exploring signal-level interveners (Astera Labs Aries, TI DS160PR810) that can manipulate PCIe training sequences below the register level. Requires custom PCB but removes firmware dependency.
+- **PLX Switches and Backplanes:** Using PCIe switches (PLX chipsets) in datacenter backplanes to aggregate multiple cards. While still limited to Gen 1 speed per slot, this enables 3–4 GPUs per switch at higher aggregate bandwidth than single PCIe slots.
+- **NVLink as Long-Term Solution:** Recognition that full multi-GPU scaling requires NVLink, which also remains disabled but is the subject of ongoing fuse-unlock research. NVLink enables 600 GB/s bidirectional bandwidth per pair of GPUs — eliminating PCIe as the bottleneck entirely.
+
+For workloads that cannot wait on a firmware breakthrough, the PCIe capacitor mod provides the most practical improvement: upgrading from PCIe Gen 1 x4 (~0.85 GB/s) to PCIe Gen 1 x16 (~4 GB/s) via hardware modification, yielding a 4× immediate improvement without firmware changes.
+
+**Testing on Other Systems**
 
 Testing performed on an HP Z4 G4 Workstation with a CMP 170HX at PCIe address `0000:21:00.0`, driver 595.58.03, VBIOS 92.00.6D.00.0A, April 2026. VBIOS disassembly performed with [envytools](https://github.com/envytools/envytools) `envydis -m falcon -V fuc5`.
+
+If you test this on different hardware or driver versions and find any deviation from the documented behavior, open an issue — such anomalies are valuable data points for future unlock research.

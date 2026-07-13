@@ -55,7 +55,41 @@ The protection is layered: multiple independent mechanisms each reject the attac
 * Ampere Falcon signing bypass — solving this unlocks PCIe speed via firmware modification, but also unlocks everything else (see Problem 1).
 * Comparative testing with a real A100 — anyone with access to both cards could dump and compare the Falcon devinit code to identify the single conditional branch or constant that decides between "advertise Gen 1" and "advertise Gen 4", which would inform targeted exploit development.
 
-**Problem 4 — Driver Compatibility with Newer Drivers**
+**Problem 3B — Memory Unlock Register Access Strategy**
+
+**Current state — partially solved, critical insight emerged**
+
+Recent community testing identified a critical issue in BAR0 register access that has blocked memory unlock progress:
+
+* The indirect engine (GPU's MMIO indirection through Falcon registers) **truncates 32-bit addresses to 16-bit**, causing writes to registers like `0x9A0204` to land at `0x0204` instead — resulting in writes to wrong MMIO offsets
+* **Direct Falcon register writes work correctly** and reach the full 24-bit BAR0 address space
+* Memory geometry registers (`FBPA_CFG1` at `0x9A0204`, `LMR` at `0x100CE0`, `CSTATUS`) must be written with matching values for GSP-RM to accept the configuration
+* Mismatched geometry values cause GSP-RM to revert the configuration back to locked values during boot
+* Persistence model refined: BAR0 writes survive driver reload but not DEVINIT or power cycles
+
+**Remaining research directions:**
+
+* Determining which Falcon register write path is safe to use without causing GSP initialization failures
+* Understanding why direct Falcon writes sometimes result in uninitialized driver state
+* Validating memory unlock on full power cycle (vs. driver reload) — requires persistent firmware modification or repeated exploit execution at each boot
+
+**Problem 4 — Intermediate Success Measures for ROP Chain Development**
+
+**Impact if solved:** Would enable faster iteration on ROP chain construction without requiring full exploit execution each time.
+
+**Current state:** The ROP chain development has insufficient intermediate validation steps. Researchers have identified a fundamental blocker: each full exploit attempt is required to determine if the ROP chain is correct, with no way to validate partial progress. Additionally:
+
+* Falcon canary values are **randomized each boot**, making it impossible to exfiltrate all canary values in a single exploit run — the canary used to corrupt memory is unknown until the exploit either succeeds or triggers the panic handler
+* Multiple stack frame levels and register states must be guessed simultaneously for a successful chain — if any single guess is wrong, the entire chain fails
+* The final exit strategy (how to cleanly return control to GSP after ROP payload execution) remains **unclear and untested** — does the chain need to restore the call stack, or can it safely jump to a panic loop?
+
+**Remaining research directions:**
+
+* Developing an instrumented Falcon emulator that can trace ROP chain execution without requiring actual GPU hardware
+* Creating intermediate validation measurements (e.g., single-instruction gadget tests) that don't require full exploit success
+* Understanding GSP behavior after the ROP payload completes — what happens if execution jumps to an unexpected address?
+
+**Problem 5 — Driver Compatibility with Newer Drivers**
 
 **Impact if solved:** Access to newer CUDA features, better software compatibility, security fixes.
 
@@ -67,11 +101,11 @@ The protection is layered: multiple independent mechanisms each reject the attac
 * Contribution to dartraiden/NVIDIA-patcher with updated patches for newer driver versions
 * Investigation of whether the misidentification can be corrected via INF/device ID patches
 
-**Problem 5 — Tensor Core Full Activation**
+**Problem 6 — Tensor Core Full Activation**
 
-**Impact if solved:** Access to full \~312 TFLOPS FP16 Tensor Core throughput versus the current hardware-gated 6.3 TFLOPS — a 49× improvement for Tensor Core workloads.
+**Impact if solved:** Access to full theoretical Tensor Core throughput. Current unlock status: tensor compute has been improved to ~200 TFLOPS (from 6.3 TFLOPS), but theoretical maximum (~312 TFLOPS FP16) remains elusive.
 
-**Current state — now significantly better understood**
+**Current state — partially unlocked, limitations identified**
 
 Microbenchmarking research (Zenodo 19002983, March 2026) has definitively characterized the Tensor Core throttle mechanism. Key findings:
 
