@@ -2,7 +2,7 @@
 
 **NVLink on the CMP 170HX — Why It Cannot Be Enabled**
 
-Despite containing all the necessary physical hardware, NVLink on the CMP 170HX is disabled via fuse-level security in the GPU silicon itself. This page clarifies the current understanding of this barrier, documents what hardware IS present, and explains why component population alone is insufficient to enable NVLink.
+NVLink on the CMP 170HX is disabled through multiple mechanisms: fuse-level security in the GPU silicon, missing critical PCB components, and firmware locks. This page clarifies the current understanding of these barriers, documents what hardware IS and IS NOT present, and explains why even full component population would be insufficient to enable NVLink without solving the fuse-level lock.
 
 **What NVLink Would Provide**
 

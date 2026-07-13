@@ -72,10 +72,16 @@ The same caution applies to memory straps. The schematic confirms that `STRAP0`�
 
 The FMA throttle persists in the firmware. The application-layer workaround routes around it but does not remove it. Any workload that cannot be modified to avoid FMA instructions (standard binaries, closed-source software) will still encounter throttled FP32 performance.
 
-**NVLink — Disabled at Fuse Level**
+**NVLink — Disabled at Fuse Level and Missing Components**
 
-NVLink physical hardware is fully present and connected on the CMP 170HX, with connectors directly connected to the GPU die (identical to A100 implementation). However, NVLink is disabled via fuse-level security, not due to unpopulated components.
+NVLink on the CMP 170HX is disabled through multiple mechanisms: fuse-level security in the GPU silicon, missing critical PCB components, and firmware locks. While the PCB traces and GPU die connections exist, several components are unpopulated:
 
-**Status:** The fuse-level disablement prevents NVLink activation and requires either HULK-level license key access or a fuse modification exploit (neither currently public). ACPI device ID spoofing and other software approaches have been attempted without success.
+* **Three NVLink bridge connectors** (RIGHT, MIDDLE, LEFT) are not populated on the CMP 170HX PCB
+* **Six signal-routing resistors** (R976, R1030, R1029, R1024, R238, R236) are missing, which route NVLink signals to the GPU die edge
+* **Power decoupling capacitors** for the NVHS signal groups are absent
+
+The fuse-level disablement is the primary barrier and prevents activation regardless of component population. Even if all missing components were populated, the GPU fuses would still block NVLink operation, requiring either HULK-level license key access or a fuse modification exploit (neither currently public).
+
+**Status:** Multi-layered protection makes NVLink activation impractical without solving the fuse barrier first. ACPI device ID spoofing and other software approaches have been attempted without success.
 
 **Path forward:** Would require either HULK cryptographic key compromise or GSP firmware exploit to potentially re-enable.
