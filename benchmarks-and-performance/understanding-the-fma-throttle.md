@@ -23,7 +23,18 @@ NVIDIA throttled FMA instruction throughput on the CMP 170HX to approximately **
 
 The throttle applies to both FP32 FMA (0.39 TFLOPS) and FP64 FMA (0.18 TFLOPS). FP16 operations are not throttled and run at their full \~42 TFLOPS. INT32 operations are not throttled and run at 12.5 TIOPS.
 
-The reasoning is straightforward: Ethereum's Ethash mining algorithm is memory-bound and integer-heavy with almost no FMA dependency. NVIDIA throttled the one instruction type that didn't matter for mining and that mattered for everything else.
+**Beyond FMA: Extended Instruction Set Throttling**
+
+The FMA throttle is the primary limitation, but it is not alone. Additional throttled instructions include:
+
+* **FMLA16, FMLA32**: Alternate FMA variants with reduced throughput
+* **ILMA0–ILMA4**: Integer Linear Multiply-Add family (throttled like FMA)
+* **DP4A**: 4-lane dot product (severely throttled) — particularly impacts quantized inference
+* **DP2A**: 2-lane dot product (unthrottled) — remains functional for custom quantization schemes
+
+For quantized model inference, DP4A throttling can have a **larger performance impact than FMA throttling** due to its use in integer quantization operations. DP2A, remaining unthrottled, can be used to design alternative quantization schemes achieving approximately 2× end-to-end speedup versus DP4A approaches.
+
+The reasoning is straightforward: Ethereum's Ethash mining algorithm is memory-bound and integer-heavy with almost no dependency on these instructions. NVIDIA throttled specific instruction families that didn't matter for mining and that mattered for compute workloads.
 
 **Why Benchmark Tools Lie**
 
@@ -45,3 +56,28 @@ The consequence for real-world use depends entirely on what you're running:
 * **Hashcat password cracking**: pure integer → 43,930 MH/s, respectable
 
 Understanding where your workload sits on this spectrum is more important than any single benchmark number.
+
+**Bypass Research Attempts**
+
+Since the FMA throttle is an artificial limitation, the community has explored multiple avenues for circumventing it. Current research includes:
+
+**PTX JIT Compilation Path:**
+- NVIDIA's PTX (Parallel Thread Execution) just-in-time compiler can optimize certain workloads at runtime
+- In JIT-compiled code paths, the FFMA instruction can theoretically be disabled, allowing execution at ~6 TFLOPS instead of 0.39 TFLOPS
+- Framework-level optimization is possible if models can target JIT-compiled execution paths
+- Status: Partially viable for framework-specific implementations
+
+**SASS Binary Patching:**
+- SASS (Shader Assembly) is the lower-level GPU instruction representation
+- Theoretical approach: Replace FFMA instructions with FMUL + FADD pairs to bypass throttling
+- Challenge: Control instructions appear every 4 instructions; replacing one FFMA requires restructuring all control flow
+- Complexity: Confirmed as "doable but not fun" but not yet publicly demonstrated
+- References: Community SASS analysis and modification research ongoing
+
+**Firmware-Level FFMA Bypass Logic:**
+- Early-stage research indicates 0.3 TFLOPS achievable through FFMA bypass logic
+- Exact implementation method unclear
+- Status: Experimental, success limited
+
+**Status Summary:**
+The FMA throttle remains in place as of current knowledge. PTX JIT optimization offers the most realistic near-term approach for framework optimization. Full bypass would require either VBIOS signature bypass (currently blocked) or undocumented hardware exploit paths.

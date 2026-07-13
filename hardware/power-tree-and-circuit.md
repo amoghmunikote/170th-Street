@@ -61,3 +61,44 @@ The CMP 170HX has fewer populated DrMOS phases for NVVDD and HBMVDD compared to 
 **Note on R1200**
 
 The 0-ohm jumper resistor R1200, which connects the `PS_5V_PGOOD` signal to the GS7155NVTD LDO enable pin, appears in the schematic but is bypassed by a direct copper trace on the actual PCB. This means removing R1200 does not actually isolate this signal — the trace maintains the connection. This is an important detail for repair work, as removing R1200 to isolate a fault may instead damage the PCB trace.
+
+---
+
+**GSP Firmware Control Layer**
+
+Beyond the fixed power delivery hardware, the CMP 170HX's actual runtime behavior is controlled by the GSP (Graphics System Processor) firmware, which is loaded from the signed VBIOS at boot time.
+
+**What GSP Controls:**
+
+**Memory Configuration:**
+- Memory capacity allocation (determines visible VRAM: 8GB, 10GB, or potentially 16GB)
+- Memory clock rates and timing parameters
+- HBM refresh cycles and power gating behavior
+- Memory training procedures during boot
+
+**Clock & Voltage Management:**
+- GPU core clock speeds and boost configurations
+- Power delivery and frequency scaling tables
+- Thermal throttling points
+
+**Instruction Execution Policy:**
+- FMA/FMLA/ILMA instruction throughput throttling
+- DP4A/DP2A instruction throttling
+- Register access permission levels (PLM: Permission Level Mechanism)
+
+**Hardware Feature Gating:**
+- NVLink activation (currently disabled via fuse-level security)
+- PCIe speed negotiation parameters
+- DirectX/Vulkan API enablement
+
+**Modification Barrier:**
+The VBIOS firmware containing GSP initialization code is cryptographically signed using RSA-3072 and ECDSA. Any modification to the VBIOS requires either:
+
+1. **HULK License Key** — A proprietary NVIDIA security key required to unlock register access for GSP firmware modification. Licenses are extremely restricted and email-request-only within NVIDIA.
+
+2. **Signature Bypass** — Cracking or compromising the RSA/ECDSA signing mechanism. As of 2026, no publicly known method exists for Ampere GPUs (though OMGVflash achieved this for Turing).
+
+3. **Exploit Path** — Finding an undocumented vulnerability in GSP firmware or the Falcon security processor that allows code execution in a privileged mode (Heavy Secure). Active research ongoing.
+
+**Practical Implication:**
+The physical hardware (power rails, memory, compute cores) is fully present and functional, but firmware licensing prevents most users from reconfiguring these subsystems. This is why seemingly simple changes (enabling extra memory, unlocking clock speeds, removing throttles) remain off-limits without a firmware modification breakthrough.

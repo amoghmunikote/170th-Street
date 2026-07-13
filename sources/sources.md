@@ -40,6 +40,27 @@ A comprehensive reference list of all sources, tools, papers, and community reso
 
 **Overclock.net — "NVIDIA Security Chip Cracked" Thread** Community discussion of Ampere VBIOS security following the OMGVflash release. Contains Veii's direct statements on Ampere certificate chain validation, the "pretty pretty impossible" assessment of going around it without Falcon reprogramming, and Igor's Lab corroboration that gupsterg and Veii "ultimately had to conclude that penetrating the current security mechanisms is very difficult." [https://www.overclock.net/threads/nvidia-security-chip-on-modern-nvidia-video-cards-cracked-modified-and-custom-bioses-allowed-soon.1807471/](https://www.overclock.net/threads/nvidia-security-chip-on-modern-nvidia-video-cards-cracked-modified-and-custom-bioses-allowed-soon.1807471/)
 
+**jonpry/sass\_fma (GitHub)** SASS-level FMA instruction replacement research. Explores low-level binary patching approaches to bypass FMA throttling through instruction substitution. Ongoing research into whether SASS binary patches can overcome the 4-instruction control flow spacing challenge. [https://github.com/jonpry/sass_fma](https://github.com/jonpry/sass_fma)
+
+**theneocorp/cmppatcher (GitHub)** Tools for modifying CMP BIOS configurations and FMA bypass implementations for CMP 90HX (Turing architecture). Branch `cmp-90hx-fma-bypass` contains working FMA bypass for Turing-based CMPs. Reference for understanding strap configuration and VBIOS modification techniques. [https://github.com/theneocorp/cmppatcher](https://github.com/theneocorp/cmppatcher)
+
+**ggml-org/llama.cpp DP2A Patch** Pull request implementing DP2A (2-lane dot product) quantization optimization, achieving approximately 2× end-to-end speedup versus DP4A during decode phase. Critical reference for understanding the performance impact of quantization method choice on CMP 170HX. [https://github.com/ggml-org/llama.cpp/issues/24616](https://github.com/ggml-org/llama.cpp/issues/24616)
+
+**duggasco/bc250-40cu-unlock** Community reverse-engineering work on BC-250 GPU unlocking, documenting VBIOS strap configuration analysis techniques and memory configuration extraction methodologies applicable to 170HX research. [https://github.com/duggasco/bc250-40cu-unlock](https://github.com/duggasco/bc250-40cu-unlock)
+
+**VBIOS Comparison Analysis Gist** Python tools and detailed analysis for extracting and comparing VBIOS versions, identifying strap configurations, and understanding memory controller settings across different NVIDIA cards. [https://gist.github.com/duggasco/819f65d599be39c148b8fcaea42c4d8d](https://gist.github.com/duggasco/819f65d599be39c148b8fcaea42c4d8d)
+
+***
+
+**VBIOS References & Tools**
+
+**TechPowerUp VBIOS Database — CMP Series** Repository of signed VBIOS firmware files for CMP cards. Key variants referenced:
+- CMP 50HX: File 262191 (Turing TU102 architecture)
+- CMP 170HX variants: Files 267478, 268495, 282151 (different memory configurations)
+Authoritative source for understanding VBIOS device ID structures and comparing firmware versions. [https://www.techpowerup.com/vgabios/](https://www.techpowerup.com/vgabios/)
+
+**TechPowerUp VBIOS Viewer (ImHex RTX40x0/Kepler/Ada Pattern)** Reference implementation for VBIOS structure parsing and visualization. Provides patterns and methodology for analyzing VBIOS files in ImHex hex editor. [https://www.techpowerup.com/forums/threads/rtx40x0-vbios-viewer-kepler-ada-nvidia-vbios-visualizer-opensource-pattern-for-imhex.322299/](https://www.techpowerup.com/forums/threads/rtx40x0-vbios-viewer-kepler-ada-nvidia-vbios-visualizer-opensource-pattern-for-imhex.322299/)
+
 ***
 
 **Hardware Documentation**
@@ -94,6 +115,16 @@ A comprehensive reference list of all sources, tools, papers, and community reso
 
 ***
 
+**Hardware Modifications & Guides**
+
+**PCIe Capacitor Restoration Demonstration (YouTube)** Visual walkthrough of soldering missing PCIe coupling capacitors to restore x16 lane support. Documents the exact capacitor locations and soldering technique. Confirms restoration from x4 to x16 functionality via standard VBIOS without firmware modification. [https://www.youtube.com/watch?v=saPvIIPP1cE](https://www.youtube.com/watch?v=saPvIIPP1cE)
+
+**Fan Cooling Adapter Approach** Alternative to expensive water cooling solutions. 120mm CPU-style fans with high CFM sufficient for thermal management. Documented by community users as viable thermal solution for passive-by-default card.
+
+**RainCandy Driver Work** Community-maintained GPU driver modifications. [https://raincandy.tech/nvidiadrv/](https://raincandy.tech/nvidiadrv/)
+
+***
+
 **Media**
 
 **Linus Tech Tips — "We Spent $5000 on a Crypto Mining GPU for Science…" (YouTube)** First major public coverage of the CMP 170HX. November 2021. Confirms early hardware details and the mining-only restriction at launch. [https://www.youtube.com/watch?v=vfVnxkj8p6I](https://www.youtube.com/watch?v=vfVnxkj8p6I)
@@ -101,6 +132,28 @@ A comprehensive reference list of all sources, tools, papers, and community reso
 **Chinese teardown video — 英伟达CMP 170HX显卡拆解 (YouTube)** Visual teardown guide. Essential reference for the difficult Step 7 board removal procedure. [https://www.youtube.com/watch?v=N1yhvXj\_Do8](https://www.youtube.com/watch?v=N1yhvXj_Do8)
 
 **Second teardown video — 技数犬 CMP 170HX 拆机测试 (YouTube)** Alternative teardown with captions (auto-translatable to English). [https://www.youtube.com/watch?v=kaiB7R4mhTg](https://www.youtube.com/watch?v=kaiB7R4mhTg)
+
+**Other Hardware Modification Videos (YouTube)** Various community demonstrations of cooling solutions, capacitor soldering, and component identification. Search for "CMP 170HX modification" on YouTube for current collection.
+
+***
+
+**Firmware & Security Research Documentation**
+
+**NVIDIA BIOS Information Table (BIT) Specification** Official NVIDIA documentation of the VBIOS BIT (BIOS Information Table) structure. Essential for understanding VBIOS section organization and configuration token meanings. [https://download.nvidia.com/open-gpu-doc/BIOS-Information-Table/1/BIOS-Information-Table.html](https://download.nvidia.com/open-gpu-doc/BIOS-Information-Table/1/BIOS-Information-Table.html)
+
+**Linux nova-core VBIOS Documentation** Kernel documentation covering VBIOS ROM layout, FwSec partitions, and type/token structures. Describes how FwSec sections are identified and loaded. [https://docs.kernel.org/gpu/nova/core/vbios.html](https://docs.kernel.org/gpu/nova/core/vbios.html)
+
+**NVIDIA Falcon Security (Official Documentation)** Official NVIDIA documentation of the Falcon security processor architecture. Essential for understanding firmware authentication and privileged mode restrictions. [https://nvidia.github.io/open-gpu-doc/Falcon-Security/Falcon-Security.html](https://nvidia.github.io/open-gpu-doc/Falcon-Security/Falcon-Security.html)
+
+**GPU Security Breach Analysis** Technical analysis of GPU security vulnerability vectors and attack methodologies. Reference for understanding potential exploit paths and security mechanisms. [https://hackingpassion.com/gpubreach-attack-nvidia-gpu/](https://hackingpassion.com/gpubreach-attack-nvidia-gpu/)
+
+***
+
+**International Resources**
+
+**Habr.com — CMP Modifications (Russian Tech Community)** Russian-language technical forum articles on CMP GPU modifications, fan behavior documentation, and community experiences. Accessible to international audience via Google Translate. [https://habr.com/ru/articles/940226/](https://habr.com/ru/articles/940226/)
+
+**NVIDIA Developer Forums — FBPA Register Discussion** Official NVIDIA developer forum discussion on register permission levels and write accessibility. [https://forums.developer.nvidia.com/t/the-difference-between-fbp-and-fbpa/367237](https://forums.developer.nvidia.com/t/the-difference-between-fbp-and-fbpa/367237)
 
 ***
 

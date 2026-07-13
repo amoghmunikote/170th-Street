@@ -43,7 +43,7 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 | Property                       | Value                              |
 | ------------------------------ | ---------------------------------- |
 | Memory Type                    | HBM2e                              |
-| Memory Capacity                | 8 GB                               |
+| Memory Capacity                | 8 GB (10GB and 16GB variants exist) |
 | Memory Bus Width               | 4,096-bit                          |
 | Memory Clock                   | 1,458 MHz (729 MHz effective base) |
 | Memory Bandwidth (theoretical) | 1,493 GB/s                         |
@@ -72,7 +72,7 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 | PCIe Interface (physical)   | x16 slot                                   |
 | PCIe Interface (electrical) | Gen 1 x4 (firmware locked)                 |
 | PCIe Bandwidth              | \~1 GB/s (0.85 GB/s measured)              |
-| NVLink                      | Gold fingers present, all ICs unpopulated  |
+| NVLink                      | Physical connectors present, disabled via fuse  |
 | Power Connector             | 1× 8-pin CPU power connector (via adapter) |
 
 **Power**
@@ -85,6 +85,15 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 | Load Power (FMA-throttled workload)  | \~75–100W  |
 | Load Power (integer/memory workload) | \~160–180W |
 | Load Power (non-FMA FP32, FluidX3D)  | \~180W     |
+
+**Memory Latency**
+
+| Property | Value | Notes |
+|----------|-------|-------|
+| Engineering Sample | ~75 ns | Measured on pre-production hardware |
+| Production Card | ~152 ns | 2× latency vs engineering samples |
+| Root Cause | 2-Hi HBM2e stacking | Fewer activated rows, different page buffer geometry |
+| Impact on Inference | Minimal | Transformers are bandwidth-bound (streaming weights sequentially), not random-access bound |
 
 **API Support**
 
@@ -101,4 +110,4 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 
 **Notes on Specification Discrepancies**
 
-Various third-party spec databases list conflicting values for the CMP 170HX — some list 16GB or 10GB of memory, others list incorrect memory bus widths. The correct values for the original 2021 NVIDIA-manufactured card are 8GB HBM2e on a 4096-bit bus as listed above. The 10GB and 16GB figures appear to be errors in automated spec databases that have propagated widely. Always verify using `nvidia-smi` on your own card.
+The CMP 170HX exists in multiple memory configurations: **8GB, 10GB, and 16GB variants are confirmed real production cards**, not database errors. The 8GB variant was the original NVIDIA 2021 release. 10GB variants have been verified in circulation with identical physical layout. 16GB is theoretically achievable through VBIOS modifications, with some evidence suggesting different die configurations may support it (similar to A100 40GB/80GB variants). All variants use the same 4,096-bit HBM2e bus. Memory capacity is controlled via GSP firmware in the VBIOS, not physical hardware limitations. Always verify actual capacity using `nvidia-smi` on your specific card.

@@ -10,7 +10,8 @@ A practical reference guide for deciding whether the CMP 170HX is suitable for y
 | --------------------------------- | -------------- | ------------------------------------- |
 | LLM inference FP16 (llama.cpp)    | ✅ Good         | Memory-bound decode, FP16 unthrottled |
 | LLM inference Q4/Q8 quant         | ✅ Good         | Memory-bound, integer dominant        |
-| INT8 inference (quantized models) | ✅ Good         | Integer unthrottled                   |
+| INT8 inference (quantized models) | ✅ Good         | Integer unthrottled, confirmed working |
+| INT4 inference                    | ❓ Unknown      | Not tested, status unclear            |
 | FDTD EM simulation                | ✅ Excellent    | Below FMA ridge point, pure BW        |
 | FluidX3D LBM CFD (FMA disabled)   | ✅ Excellent    | 90% of A100                           |
 | Memory-bound stencil compute      | ✅ Excellent    | Full 1,355 GB/s available             |
@@ -30,11 +31,31 @@ A practical reference guide for deciding whether the CMP 170HX is suitable for y
 
 **LLM Inference — The Sweet Spot**
 
-The CMP 170HX is a legitimate inference accelerator for models that fit within 8GB VRAM. The decode phase (token generation) is almost purely memory-bandwidth bound at batch size 1 — the GPU reads model weights from VRAM once per token generated. With 1,355 GB/s of bandwidth, the CMP 170HX delivers competitive token generation speed versus cards that nominally have far higher FLOPS.
+The CMP 170HX is a legitimate inference accelerator for single-request decode-phase workloads. The card's behavior differs significantly between prefill and decode phases:
 
-The prefill phase (processing the input prompt) is more compute-intensive and is more affected by the FMA throttle even at FP16. For long prompts this will be noticeably slower than on cards without throttling. For typical interactive use with moderate prompt lengths, this is acceptable.
+**Decode Phase (Token Generation):**
+- Purely memory-bandwidth bound at batch size 1
+- Single token generation: GPU reads all model weights once, produces one output token
+- With 1,355 GB/s bandwidth, delivers competitive token/second rates
+- Current performance: Latency-bound rather than compute-bound (batching shows sub-linear throughput improvement)
+- Increasing batch size shows diminishing returns for throughput (more latency-bound than compute-bound)
 
-Best models for this card: 3B–8B parameter models at Q4\_K\_M or Q5\_K\_M quantization.
+**Prefill Phase (Prompt Processing):**
+- More compute-intensive than decode
+- Affected by FMA throttle even at FP16
+- Noticeably slower than on unthrottled cards, especially for long prompts
+- For typical interactive single-request use, still acceptable
+
+**Quantization Approach:**
+- Q4/Q8 quantization works well
+- DP4A (4-lane dot product) is heavily throttled — use with caution
+- DP2A (2-lane dot product) remains unthrottled and can be used for custom quantization schemes (~2× speedup vs DP4A)
+
+**Batching Limitations:**
+- Batching on single-request inference frameworks (llama.cpp) has significant limitations
+- Decode-specific batching may improve throughput but with trade-offs in latency
+
+Best models for this card: 3B–8B parameter models at Q4\_K\_M or Q5\_K\_M quantization, single-request / batch size 1 for consistent performance.
 
 **Scientific Simulation — The Original Use Case**
 
@@ -54,21 +75,33 @@ Several otherwise viable workloads are limited by the 0.85 GB/s PCIe bandwidth r
 
 For workloads that can load all data into VRAM once and stay there, PCIe bandwidth is irrelevant. For streaming workloads that constantly feed new data from system RAM, the PCIe bottleneck is severe.
 
-**The 8GB Constraint**
+**Memory Variants and Constraints**
 
-8GB is enough for:
+The CMP 170HX is available in multiple memory configurations: **8GB** (original), **10GB** (confirmed production variant), and potentially **16GB** (through VBIOS modification). All variants use the same 4,096-bit HBM2e bus but with different die capacities controlled by GSP firmware.
 
+**8GB Configuration:**
+Sufficient for:
 * Any 3B–7B model at Q4–Q8 quantization
 * FDTD grids up to approximately 420³ cells
 * FluidX3D domains up to approximately 400³ lattice sites
 * Standard computer vision inference (ResNet, ViT, etc.)
 
-8GB is not enough for:
-
+Insufficient for:
 * 13B+ parameter models at Q4 quantization (require 10–12GB+)
 * 70B models in any quantization
 * Large batch inference with long context windows
 * Multiple models loaded simultaneously
+
+**10GB Configuration:**
+- Enables 13B parameter models at Q4/Q5 quantization
+- Improved bandwidth characteristics vs 8GB
+- Enables more flexible context windows
+- PCIe bottleneck remains unchanged
+
+**16GB Configuration (Theoretical):**
+- Would support 70B models at INT4 quantization
+- Currently requires VBIOS modification and GSP firmware signature bypass
+- Not yet publicly confirmed as working
 
 **Recommended Use Cases by User Type**
 

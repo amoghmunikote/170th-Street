@@ -72,6 +72,10 @@ The same caution applies to memory straps. The schematic confirms that `STRAP0`�
 
 The FMA throttle persists in the firmware. The application-layer workaround routes around it but does not remove it. Any workload that cannot be modified to avoid FMA instructions (standard binaries, closed-source software) will still encounter throttled FP32 performance.
 
-**NVLink — Not Enabled**
+**NVLink — Disabled at Fuse Level**
 
-Even if the hardware were fully populated (see the NVLink Population page), whether the firmware would activate it is unknown and currently unverifiable without a firmware modification capability.
+NVLink physical hardware is fully present and connected on the CMP 170HX, with connectors directly connected to the GPU die (identical to A100 implementation). However, NVLink is disabled via fuse-level security, not due to unpopulated components.
+
+**Status:** The fuse-level disablement prevents NVLink activation and requires either HULK-level license key access or a fuse modification exploit (neither currently public). ACPI device ID spoofing and other software approaches have been attempted without success.
+
+**Path forward:** Would require either HULK cryptographic key compromise or GSP firmware exploit to potentially re-enable.
