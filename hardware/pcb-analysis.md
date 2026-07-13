@@ -24,7 +24,7 @@ Several categories of components are unpopulated on the CMP 170HX PCB compared t
 
 **VRM phases** — The voltage regulator module for the GPU core uses fewer DrMOS switching transistors and output inductors than the A100. This reduces the maximum sustained current delivery to the GPU, which contributes to the lower power ceiling of the CMP 170HX.
 
-**NVLink ICs** — The gold finger contacts for NVLink are present, but all the associated interface ICs, support components, and connectors are unpopulated. Populating them would theoretically enable NVLink using the A100 schematics as a guide, but this requires sourcing obscure ICs and precision SMD soldering.
+**NVLink** — The physical NVLink connectors and routing are fully present on the CMP 170HX PCB (identical to A100 implementation). However, some interface ICs and support components are unpopulated. More critically, NVLink is disabled at the fuse level in the GPU silicon itself, preventing activation regardless of hardware population. Enabling NVLink would require both hardware population and firmware/fuse-level enabling, which requires HULK-level cryptographic access (not publicly available).
 
 **PCIe AC Coupling Capacitors** — Twelve of the sixteen PCIe data lanes have their AC coupling capacitors omitted from the PCB. These 0402-size capacitors are necessary for valid differential signaling on each lane. Their absence forces the PCIe link to negotiate down to x4 width. The empty pads are visible on the board and can theoretically be populated to restore x16 width, though the firmware-level Gen 1 speed lock remains even after this modification.
 

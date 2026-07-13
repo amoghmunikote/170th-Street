@@ -62,9 +62,9 @@ For custom FDTD kernels on the CMP 170HX:
 * **No FMA workaround needed** — standard kernels run at full speed
 * Optimize memory access patterns for coalesced reads — target 256-bit access widths to hit peak bandwidth
 * Use `float` (FP32) rather than `double` (FP64) — FP64 is severely throttled even without FMA
-* Grid resolution is limited by 8GB VRAM — for 3D FDTD with FP32, maximum grid size is approximately 512³ cells depending on field components stored
+* Grid resolution is limited by VRAM — the calculation below assumes the standard 8GB variant; 10GB and 16GB variants can accommodate proportionally larger grids
 
-**VRAM Capacity for FDTD**
+**VRAM Capacity for FDTD (8GB Variant)**
 
 A 3D FDTD simulation stores 6 field components (Ex, Ey, Ez, Hx, Hy, Hz) per cell in FP32 (4 bytes each). For a grid of N³ cells:
 
@@ -73,8 +73,9 @@ VRAM required = N³ × 6 × 4 bytes
 
 N=256:  ~1.6 GB
 N=384:  ~5.4 GB
+N=420:  ~8.0 GB  ← practical maximum for 8GB variant
 N=448:  ~8.5 GB  ← near limit
 N=512:  ~12.8 GB ← exceeds 8GB
 ```
 
-Maximum practical 3D grid at full FP32: approximately **420³ cells** within the 8GB budget. For 2D FDTD simulations the constraint is far less limiting.
+Maximum practical 3D grid on 8GB variant: approximately **420³ cells** at full FP32. The 10GB variant can accommodate N=480-500, and the 16GB variant significantly larger. For 2D FDTD simulations the memory constraint is far less limiting.

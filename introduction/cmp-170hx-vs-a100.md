@@ -25,7 +25,7 @@ The CMP 170HX and the A100 PCIe 40GB share the same GA100 die, the same PCB layo
 | Memory Bus                | 4,096-bit                        | 5,120-bit          | 6,144-bit      |
 | Memory Bandwidth          | 1,493 GB/s                       | 1,555 GB/s         | 1,555 GB/s     |
 | PCIe Interface            | Gen1 x4 (1 GB/s)                 | Gen4 x16 (64 GB/s) | SXM4 NVLink    |
-| NVLink                    | None                             | 600 GB/s           | 600 GB/s       |
+| NVLink                    | Disabled (fuse)                  | 600 GB/s           | 600 GB/s       |
 | TDP                       | 250W                             | 250W               | 400W           |
 | Display Outputs           | None                             | None               | None           |
 | ECC Memory                | No                               | Yes                | Yes            |
@@ -55,7 +55,7 @@ Layer 1 is a firmware-level lock that caps PCIe speed at Gen 1 (2.5 GT/s) regard
 
 Layer 2 is a physical PCB modification where the AC coupling capacitors for 12 of the 16 PCIe data lanes have been omitted from the board. Without these capacitors, those lanes cannot establish a valid differential signal, forcing the link to downgrade to x4 width. This is trivially reversible by soldering 0402 capacitors onto the empty pads — but because of Layer 1, restoring x16 width still leaves the card at Gen 1 speed (4 GB/s total instead of 1 GB/s).
 
-**NVLink** The gold finger connectors for NVLink are present on the CMP 170HX PCB but all associated ICs and components are unpopulated. Populating them is theoretically possible using the A100 schematics as a guide but would require sourcing the specific ICs and performing fine-pitch SMD soldering with significant risk.
+**NVLink** NVLink physical hardware (connectors, routing, and all signal paths) is fully present on the CMP 170HX PCB, identical to the A100. However, NVLink is disabled via fuse-level security in the GPU silicon itself. Enabling it requires either HULK-level cryptographic keys (proprietary NVIDIA security license) or a silicon-level exploit — neither is publicly available. Even if the hardware were fully populated and active, the VBIOS firmware signing would likely prevent activation without firmware modification.
 
 **ECC Memory** Error-correcting code memory is disabled on the CMP 170HX. For mining this is irrelevant — a bit flip in a hash computation causes the block to fail and mining continues. For scientific computing, ECC is important for result integrity. Disabling it also slightly increases effective memory bandwidth as ECC overhead is eliminated.
 

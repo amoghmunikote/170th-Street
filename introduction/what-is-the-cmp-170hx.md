@@ -22,7 +22,7 @@ The most significant is the **FP32 FMA throttle**. FMA (Fused Multiply-Add) is t
 
 The **PCIe interface** is restricted in two independent ways: a firmware-level lock to PCIe Gen 1 speed, and a hardware-level PCB modification where the AC coupling capacitors for 12 of the 16 PCIe lanes have been omitted, forcing a link downgrade to x4 width. The combined result is approximately 1 GB/s of PCIe bandwidth instead of the 64 GB/s a full PCIe 4.0 x16 connection would provide.
 
-**VRAM** is limited to 8GB despite the A100 shipping with 40GB or 80GB. **NVLink** components are entirely unpopulated. **Display outputs** are absent. And **VBIOS firmware signing** prevents modification of any of these restrictions through software alone.
+**VRAM** is limited to 8GB (though 10GB and 16GB variants exist) despite the A100 shipping with 40GB or 80GB. **NVLink** physical hardware is fully present but disabled via fuse-level security, preventing activation without specialized access keys. **Display outputs** are absent. And **VBIOS firmware signing** prevents modification of these restrictions through software alone.
 
 **Why it exists**
 

@@ -62,7 +62,9 @@ cmake --build build -j$(nproc)
 
 **Step 3 — Download a model**
 
-Models must fit within 8GB VRAM. Recommended sizes for full GPU offload:
+**Note:** This guide assumes the standard 8GB CMP 170HX variant. 10GB and 16GB variants exist and can accommodate larger models proportionally. All memory estimates below are for the 8GB variant.
+
+Models must fit within available VRAM. Recommended sizes for full GPU offload on 8GB variant:
 
 | Model             | Quantization | VRAM Usage | Recommended?                       |
 | ----------------- | ------------ | ---------- | ---------------------------------- |
@@ -143,9 +145,9 @@ Based on the arXiv paper results and community testing, expected performance at 
 
 Token generation speed is the most user-relevant metric for interactive use. The CMP 170HX's 1,355 GB/s bandwidth makes it competitive here because decode is almost purely memory-bandwidth bound at batch size 1 — the GPU is continuously reading model weights from VRAM to generate each token.
 
-**8GB VRAM Strategy**
+**Memory Strategy (8GB Variant)**
 
-8GB is a real constraint. To maximize what fits:
+On the standard 8GB variant, VRAM is a real constraint. To maximize what fits:
 
 * Use Q4\_K\_M quantization as the default — best quality/size ratio
 * Use Q3\_K\_M for models that are slightly too large at Q4

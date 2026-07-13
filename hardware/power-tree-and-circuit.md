@@ -102,3 +102,22 @@ The VBIOS firmware containing GSP initialization code is cryptographically signe
 
 **Practical Implication:**
 The physical hardware (power rails, memory, compute cores) is fully present and functional, but firmware licensing prevents most users from reconfiguring these subsystems. This is why seemingly simple changes (enabling extra memory, unlocking clock speeds, removing throttles) remain off-limits without a firmware modification breakthrough.
+
+---
+
+**VBIOS Fan Curve Modifications — Unconfirmed Effectiveness**
+
+**Claim:** Modified VBIOS files circulating online (particularly fan curve changes) improve thermal performance.
+
+**Reality:** Community testing shows **no confirmed improvement** from VBIOS fan curve changes. The CMP 170HX is a passive design with no onboard fans. Some pre-modded VBIOS files are documented (TechPowerUp File 262191 is marked as "MSI 2080 with fan curves"), but:
+
+1. **No onboard fans exist** — These modifications would only matter if external fans were wired to the GPU's PWM output, which is not standard
+2. **Testing inconclusive** — Users reported testing modified VBIOS files (particularly fan curve variants) with "no perceived change" in thermal behavior
+3. **Single-instance claims** — Only anecdotal reports exist; no systematic thermal testing comparing stock vs. modified VBIOS has been published
+
+**Recommendation:** Do not rely on VBIOS modifications for cooling improvements. Use physical cooling solutions instead:
+- External watercooling block (recommended for 180W+ loads)
+- High-CFM 120mm fan adapter (sufficient for moderate loads)
+- Chassis airflow optimization
+
+**Bottom line:** VBIOS modifications for fan behavior are unconfirmed and should not be expected to improve thermal performance on a passive-design card.

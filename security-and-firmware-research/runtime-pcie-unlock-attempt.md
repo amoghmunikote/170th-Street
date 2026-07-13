@@ -139,6 +139,28 @@ Three realistic paths still exist, none of which are a quick weekend project:
 
 3. **A yet-undiscovered hardware vulnerability** — side-channel attacks on signature verification, decapsulation and direct-probe attacks, or an architectural flaw we don't yet know about. Realistically this is multi-year security research territory.
 
+---
+
+**Why Real-Time VBIOS Patching During Boot Is Not Viable**
+
+A theoretical approach has been proposed: use an FPGA or microcontroller-based MUX to intercept the VBIOS during the boot sequence, patching it on-the-fly before Falcon reads it. This is **not viable** for the following reasons:
+
+**Timing Constraint:** The gap between GPU power-on and Falcon signature validation is ~21.9 milliseconds. Even the fastest VBIOS modifications require pre-calculation offline (at least several milliseconds per patch). Real-time LLM-assisted patching introduces 50–100ms network latency alone, which already exceeds the available window.
+
+**Signature Coverage:** The entire VBIOS is signed, including the section headers and configuration. Patching individual bytes requires regenerating the RSA-3072 signature, which requires the private key. Pre-staging a complete modified image bypasses the timing issue but still requires the signature key.
+
+**Complexity:** Even with the timing solved, the MUX interposer must:
+1. Detect the exact boot moment (not straightforward without probe access to internal buses)
+2. Switch VBIOS source to a pre-staged Golden Image
+3. Complete the switch before Falcon begins the signature check
+4. Not corrupt the image during handoff (high-speed SPI at 1.8V is signal-integrity sensitive)
+
+**Practical Result:** The most realistic approach would be pre-calculating the patched image *offline*, then using an interposer to swap the VBIOS source at boot time — but this still requires either signing capability or a complete bypass of signature validation (not currently available).
+
+**Conclusion:** Real-time LLM-assisted patching is impractical. VBIOS modification remains blocked by signature validation until a cryptographic breakthrough or Falcon exploit is found.
+
+---
+
 **How to Reproduce the Tests**
 
 For anyone who wants to verify these findings on their own card (or repeat with a newer driver or different VBIOS version), here is the minimal test sequence:

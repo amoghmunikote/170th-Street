@@ -38,7 +38,7 @@ The A100 40GB PCIe ships with five HBM2e stacks on its interposer. The CMP 170HX
 
 **NVLink**
 
-The NVLink gold finger contacts are present on the CMP 170HX PCB but every associated IC is unpopulated. NVLink would enable 600 GB/s GPU-to-GPU bandwidth for multi-GPU configurations — far beyond the PCIe bandwidth available. Restoring NVLink would require sourcing the specific interface ICs from the A100 schematic, performing fine-pitch SMD soldering, and likely dealing with firmware-level enabling. This is largely uncharted territory.
+The NVLink physical hardware (connectors and routing) is fully present on the CMP 170HX PCB, identical to the A100. However, NVLink is disabled via fuse-level security in the GPU silicon itself. Some interface ICs and support components are unpopulated, but the root blocker is the fuse disablement, not the component population. Enabling NVLink would require HULK-level cryptographic keys to unlock the fuses — a proprietary NVIDIA license not publicly available. Even if components were populated, the firmware-level security would still prevent activation. NVLink would enable 600 GB/s GPU-to-GPU bandwidth — far beyond the current PCIe bottleneck — but remains inaccessible without a breakthrough in either cryptography or firmware exploitation.
 
 **Display Outputs**
 

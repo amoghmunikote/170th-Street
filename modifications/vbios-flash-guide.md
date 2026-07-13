@@ -143,3 +143,12 @@ sudo ./nvflash cmp170hx_backup.rom
 ```
 
 If the card is completely unresponsive to nvflash, recovery requires a SPI flasher connected directly to the EEPROM and is significantly more difficult.
+
+**Important Note on SPI Dumping:** Community attempts to dump VBIOS via external SPI programmers have revealed significant reliability issues:
+- Signal integrity problems at high speeds (1.8V SPI bus, >50 MHz)
+- Long probe wires (15+ cm) introduce noise that corrupts data
+- Incorrect chip type assumptions result in partial or corrupted dumps
+- Only ~64 KB successfully extracted from dumps that should be larger
+- Recompiled images from partial dumps often fail to boot
+
+**Recommendation:** Always use `nvflash --save` (via software) for backup, which is 100% reliable. Only resort to SPI dumping as a last resort for recovery, and use short probe connections with proper signal integrity practices if you attempt it.
