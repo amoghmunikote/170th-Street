@@ -32,15 +32,30 @@ The physical NVLink infrastructure on the CMP 170HX is comprehensive:
 
 This complete infrastructure exists because the CMP 170HX uses the same PCB as the A100 — removing these would have required a custom board revision. The PCB was never modified; components were simply omitted.
 
-**Supporting Components — What Is Missing (Not the Root Problem)**
+**Supporting Components — Missing but Secondary to Fuse Lock**
 
-Even if the fuse-level security could be bypassed, several supporting components are unpopulated on the CMP 170HX. These are documented below for completeness, but their absence is NOT the reason NVLink is disabled — the fuse-level locks are. Analysis of the A100 schematics (Pages 4, 5, 9, 16, 17) reveals the following missing categories:
+Even if the fuse-level security could be bypassed, several supporting components are unpopulated on the CMP 170HX. These are documented below for completeness, but their absence is NOT the reason NVLink is disabled — the fuse-level locks are the fundamental barrier. Analysis of the A100 schematics and community investigation reveals the following:
 
 **1. Physical NVLink Bridge Connectors**
 
 Three connectors labeled `CON_NVLINK_GA10X` — RIGHT, MIDDLE, and LEFT — form the physical NVLink bridge interface. These are the edge connectors that an NVLink bridge card plugs into. All three are unpopulated on the CMP 170HX. Without these, no NVLink bridge can physically connect.
 
-**2. NVHS Power Decoupling Capacitors**
+**2. NVLink Power and Signal Resistors**
+
+Community analysis of the A100 schematics identified five resistors physically missing on the CMP 170HX that route power and signals to the middle NVLink connector:
+
+| Reference | Location             | Purpose                    | A100 Status | CMP 170HX Status |
+| --------- | -------------------- | -------------------------- | ----------- | ---------------- |
+| R976      | Ball F51 (under die) | Signal routing             | Populated   | Missing          |
+| R1030     | Page 4, Ball G1      | Signal routing             | Populated   | Missing          |
+| R1029     | Page 5, Ball F1      | Signal routing             | Populated   | Missing          |
+| R1024     | Page 17              | Connector routing          | Populated   | Missing          |
+| R238      | Page 17              | Connector routing          | Populated   | Missing          |
+| R236      | Page 17              | Connector routing          | Populated   | Missing          |
+
+These resistors are physically small and traceable with careful inspection. R976's placement under the GPU die makes it the most difficult to access, potentially requiring micro-soldering or thin wire routing to ball F51 at the die edge.
+
+**3. NVHS Power Decoupling Capacitors**
 
 Page 9 (GPU: NVHS POWER) shows that each NVHS group pair (0,1 / 2,3 / 4,5) requires its own bank of power supply decoupling capacitors on the `PEX_DVDD` rail. All of these are missing on the CMP 170HX:
 
@@ -48,6 +63,42 @@ Page 9 (GPU: NVHS POWER) shows that each NVHS group pair (0,1 / 2,3 / 4,5) requi
 | --------- | ------- | ------------- | ------ | ----- |
 | 1µF X6S   | 0402 4V | 6             | 3      | 18    |
 | 4.7µF X6S | 0402 4V | 3             | 3      | 9     |
+
+**4. NVLink Bridge Active Electronics**
+
+The NVLink bridge itself contains active components including a microcontroller and ROM chip. These are NOT on the CMP 170HX PCB — they are part of the separate physical NVLink bridge card that connects between two GPUs. A functional NVLink bridge card can be sourced from used A100 or other compatible systems, but must be purchased separately.
+
+---
+
+## Community Research and Practical Attempts
+
+**NVLink as a Path Forward**
+
+The community recognizes NVLink as a superior alternative to PCIe for multi-GPU scaling. Without NVLink or high-speed PCIe (Gen 4+), multi-GPU configurations are severely bandwidth-limited — tensor parallelism across 3+ cards is impractical due to PCIe bottlenecks.
+
+**Active Development**
+
+Community members are actively exploring practical solutions:
+
+- **Custom Single-Slot Cooling with 8-way NVLink:** Developer jonpry_77715 is working on compact thermal solutions specifically designed for single-slot NVLink-enabled configurations. This would allow building denser multi-GPU systems with full NVLink bandwidth.
+- **PCIe-based Alternatives:** Discussion of using PCIe switches and bridges as an interim solution while fuse-level NVLink enablement remains blocked. A 4-way NVLink mesh configuration provides approximately 200 GB/s of interconnect bandwidth.
+
+**Scalability Perspective**
+
+For practical multi-GPU systems:
+- **2 GPUs:** 600 GB/s (full bidirectional NVLink) — excellent for tensor parallelism
+- **4 GPUs:** Full mesh topology possible, though total bisection bandwidth is shared
+- **8 GPUs:** Single-slot form factor being prototyped; requires specialized bridges and cooling
+
+**Feasibility Assessment**
+
+Populating the missing resistors and capacitors is physically feasible for experienced solderers, but **does not solve the fuse-level security barrier**. Even a fully populated and component-complete CMP 170HX would still be unable to enable NVLink without:
+
+1. HULK cryptographic keys (not publicly available)
+2. Fuse reprogramming capability (requires specialized equipment or silicon modification)
+3. GSP/devinit firmware modifications (blocked by VBIOS signing)
+
+The physical component population effort would only make sense in conjunction with solving the fuse-level lock — either through an exploit or through direct GPU modification.
 | 10µF X6S  | 0603 4V | 3             | 3      | 9     |
 | 22µF X6S  | 0603 4V | 2             | 3      | 6     |
 
