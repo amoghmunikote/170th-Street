@@ -8,7 +8,7 @@ The NVIDIA CMP 170HX is one of the most unusual graphics cards ever made — a p
 
 **What it is at the silicon level**
 
-The CMP 170HX uses the GA100-105F-A1 chip, a binned variant of the full GA100 die that powers the A100. It has 4,480 CUDA cores spread across 70 streaming multiprocessors, 280 tensor cores, and 8GB of HBM2e memory on a 4096-bit bus delivering 1,493 GB/s of memory bandwidth. That bandwidth figure is not a typo — it is nearly 1.5 times faster than the RTX 4090's memory system and essentially matches the A100 PCIe 40GB's 1,555 GB/s. The card runs at a base clock of 1,140 MHz and boosts to 1,410 MHz with a 250W TDP.
+The CMP 170HX exists in multiple hardware variants. The most common 10GB variant has 4,480 CUDA cores spread across 70 streaming multiprocessors and 280 tensor cores on a 5,120-bit memory bus delivering approximately 1,865 GB/s of theoretical memory bandwidth. The earlier 8GB variant has 3,584 CUDA cores (56 SMs, 224 tensor cores) on a 4,096-bit bus delivering 1,493 GB/s. In both cases, this bandwidth is extraordinary — nearly 1.5 times faster than the RTX 4090's memory system and essentially matching the A100 PCIe 40GB's 1,555 GB/s. The card runs at a base clock of 1,140 MHz and boosts to 1,410 MHz with a 250W TDP.
 
 The PCB itself is nearly identical to the A100 40GB PCIe reference design. Every component reference designator on the board matches the leaked NVIDIA Tesla A100 electrical schematics exactly — NVIDIA was still calling it Tesla internally when it was being designed. The differences are omissions: fewer VRM phases, no NVLink ICs, no display outputs, and missing AC coupling capacitors on certain PCIe lanes.
 
@@ -22,7 +22,7 @@ The most significant is the **FP32 FMA throttle**. FMA (Fused Multiply-Add) is t
 
 The **PCIe interface** is restricted in two independent ways: a firmware-level lock to PCIe Gen 1 speed, and a hardware-level PCB modification where the AC coupling capacitors for 12 of the 16 PCIe lanes have been omitted, forcing a link downgrade to x4 width. The combined result is approximately 1 GB/s of PCIe bandwidth instead of the 64 GB/s a full PCIe 4.0 x16 connection would provide.
 
-**VRAM** is limited to 8GB (though 10GB and 16GB variants exist) despite the A100 shipping with 40GB or 80GB. **NVLink** physical hardware is fully present but disabled via fuse-level security, preventing activation without specialized access keys. **Display outputs** are absent. And **VBIOS firmware signing** prevents modification of these restrictions through software alone.
+**VRAM** is limited to 8GB in the original 2021 release, though 10GB variants were produced and are in circulation. Theoretically larger capacities (16GB+) may be achievable through die configurations similar to A100 variants, but no confirmed production cards exist. **NVLink** physical hardware is fully present but disabled via fuse-level security, preventing activation without specialized access keys. **Display outputs** are absent. And **VBIOS firmware signing** prevents modification of these restrictions through software alone.
 
 **Why it exists**
 

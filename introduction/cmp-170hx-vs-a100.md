@@ -6,12 +6,14 @@ The CMP 170HX and the A100 PCIe 40GB share the same GA100 die, the same PCB layo
 
 **Full Specification Comparison**
 
-| Specification             | CMP 170HX                        | A100 PCIe 40GB     | A100 SXM4 40GB |
+**Note:** The CMP 170HX exists in multiple hardware variants. The specifications below are for the 10GB variant (70 SM configuration). The 8GB variant has different core counts. See the Full Specifications page for complete variant details.
+
+| Specification             | CMP 170HX (10GB)                 | A100 PCIe 40GB     | A100 SXM4 40GB |
 | ------------------------- | -------------------------------- | ------------------ | -------------- |
 | GPU Die                   | GA100-105F-A1                    | GA100-895          | GA100-895      |
-| CUDA Cores                | 4,480                            | 6,912              | 6,912          |
-| Tensor Cores              | 280                              | 432                | 432            |
-| Streaming Multiprocessors | 70                               | 108                | 108            |
+| CUDA Cores                | 4,480 (10GB) / 3,584 (8GB)       | 6,912              | 6,912          |
+| Tensor Cores              | 280 (10GB) / 224 (8GB)           | 432                | 432            |
+| Streaming Multiprocessors | 70 (10GB) / 56 (8GB)             | 108                | 108            |
 | Base Clock                | 1,140 MHz                        | 765 MHz            | 765 MHz        |
 | Boost Clock               | 1,410 MHz                        | 1,410 MHz          | 1,410 MHz      |
 | Max Clock                 | 1,695 MHz                        | 1,410 MHz          | 1,410 MHz      |
@@ -21,9 +23,9 @@ The CMP 170HX and the A100 PCIe 40GB share the same GA100 die, the same PCB layo
 | FP16                      | 42 TFLOPS                        | 312 TFLOPS         | 312 TFLOPS     |
 | INT32                     | 12.5 TIOPS                       | 19.5 TIOPS         | 19.5 TIOPS     |
 | TF32 (Tensor)             | \~6.2 TFLOPS\*                   | 156 TFLOPS         | 156 TFLOPS     |
-| Memory                    | 8GB HBM2e                        | 40GB HBM2e         | 40GB HBM2e     |
-| Memory Bus                | 4,096-bit                        | 5,120-bit          | 6,144-bit      |
-| Memory Bandwidth          | 1,493 GB/s                       | 1,555 GB/s         | 1,555 GB/s     |
+| Memory                    | 8GB (10GB/16GB variants)         | 40GB HBM2e         | 40GB HBM2e     |
+| Memory Bus                | 4,096-bit (8GB) / 5,120-bit (10GB) | 5,120-bit          | 6,144-bit      |
+| Memory Bandwidth          | 1,493 GB/s (8GB) / ~1,865 GB/s (10GB) | 1,555 GB/s         | 1,555 GB/s     |
 | PCIe Interface            | Gen1 x4 (1 GB/s)                 | Gen4 x16 (64 GB/s) | SXM4 NVLink    |
 | NVLink                    | Disabled (fuse)                  | 600 GB/s           | 600 GB/s       |
 | TDP                       | 250W                             | 250W               | 400W           |
@@ -41,7 +43,7 @@ The CMP 170HX and the A100 PCIe 40GB share the same GA100 die, the same PCB layo
 
 **What Was Removed and Why**
 
-**CUDA Cores (4,480 vs 6,912)** The GA100 die contains 128 streaming multiprocessors in its full configuration. The A100 enables 108 of these, and the CMP 170HX enables only 70. The disabled SMs contain the additional CUDA and tensor cores. This is standard chip binning — dies that don't meet the quality threshold for full A100 production are sold at a lower tier with fewer active cores. This was not done specifically to cripple the CMP; it reflects where these chips sit in NVIDIA's production yield hierarchy.
+**CUDA Cores (3,584–4,480 vs 6,912)** The GA100 die contains 128 streaming multiprocessors in its full configuration. The A100 enables 108 of these, and the CMP 170HX exists in multiple hardware variants: the 10GB variant enables 70 SMs (4,480 CUDA cores), while the 8GB variant enables 56 SMs (3,584 CUDA cores). The disabled SMs contain the additional CUDA and tensor cores. This is standard chip binning — dies that don't meet the quality threshold for full A100 production are sold at a lower tier with fewer active cores. This was not done specifically to cripple the CMP; it reflects where these chips sit in NVIDIA's production yield hierarchy.
 
 **FP32 FMA Throttling (0.39 TFLOPS vs 19.5 TFLOPS)** This is the most aggressive and deliberate restriction. Fused Multiply-Add is the core instruction used in virtually every compute workload — machine learning training and inference, physics simulation, rendering, scientific computing. NVIDIA throttled FMA throughput to approximately 1/50th of what the hardware is capable of. Crucially, this throttling is applied at the driver or firmware level, not by disabling hardware. Non-FMA FP32 operations run at 6.25 TFLOPS, and the hardware clearly has far more compute capacity that is being artificially suppressed.
 

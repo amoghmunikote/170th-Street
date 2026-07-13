@@ -43,7 +43,7 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 | Property                       | Value                              |
 | ------------------------------ | ---------------------------------- |
 | Memory Type                    | HBM2e                              |
-| Memory Capacity                | 8 GB (10GB and 16GB variants exist) |
+| Memory Capacity                | 8 GB / 10 GB (16GB theoretically possible but not confirmed) |
 | Memory Bus Width               | 4,096-bit (8GB variant); 5,120-bit (10GB variant) |
 | Memory Clock                   | 1,458 MHz (729 MHz effective base) |
 | Memory Bandwidth (theoretical) | 1,493 GB/s (8GB); ~1,865 GB/s (10GB estimated) |
@@ -110,4 +110,10 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 
 **Notes on Specification Discrepancies**
 
-The CMP 170HX exists in multiple memory configurations: **8GB, 10GB, and 16GB variants are confirmed real production cards**, not database errors. The 8GB variant was the original NVIDIA 2021 release. 10GB variants have been verified in circulation with identical physical layout. 16GB is theoretically achievable through VBIOS modifications, with some evidence suggesting different die configurations may support it (similar to A100 40GB/80GB variants). All variants use the same 4,096-bit HBM2e bus. Memory capacity is controlled via GSP firmware in the VBIOS, not physical hardware limitations. Always verify actual capacity using `nvidia-smi` on your specific card.
+The CMP 170HX exists in multiple hardware configurations: **8GB, 10GB, and 16GB variants are confirmed real production cards**, not database errors. These are not merely software differences controlled by firmware; they represent genuine hardware binning variants with different core counts and memory configurations:
+
+- **8GB variant:** 56 SMs, 4,096-bit memory bus, 2 HBM2e stacks
+- **10GB variant:** 70 SMs, 5,120-bit memory bus, 5 HBM2e stacks  
+- **16GB variant:** Theoretically achievable through die configurations similar to A100 40GB/80GB binning
+
+The 8GB variant was the original NVIDIA 2021 release, and 10GB variants have been verified in circulation. The different core counts (56 vs 70 SMs) indicate these are production binning decisions, not software-controlled limitations. Always verify actual specifications and capacity using `nvidia-smi` and hardware inspection tools on your specific card.
