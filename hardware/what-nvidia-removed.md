@@ -8,7 +8,7 @@ Every restriction on the CMP 170HX was intentional. This page documents each one
 
 **FP32 FMA Throttling — The Core Restriction**
 
-The most significant restriction on the CMP 170HX is the throttling of FP32 Fused Multiply-Add (FMA) instructions to approximately 0.39 TFLOPS — roughly 1/64th of the hardware's theoretical capability of 25 TFLOPS.
+The most significant restriction on the CMP 170HX is the throttling of FP32 Fused Multiply-Add (FMA) instructions to approximately 0.39 TFLOPS — roughly 1/32nd of the hardware's theoretical capability of 12.63 TFLOPS (for the 10GB variant).
 
 FMA is the instruction at the core of nearly every modern compute workload. Matrix multiplication, neural network inference and training, physics simulation, rendering — all rely heavily on FMA. By throttling this single instruction type, NVIDIA made the card incompatible with virtually every piece of ready-made compute software.
 

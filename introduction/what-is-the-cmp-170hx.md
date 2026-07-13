@@ -18,7 +18,7 @@ The PCB itself is nearly identical to the A100 40GB PCIe reference design. Every
 
 To prevent the card from being used for general compute, NVIDIA implemented multiple layers of restriction:
 
-The most significant is the **FP32 FMA throttle**. FMA (Fused Multiply-Add) is the instruction at the heart of virtually every modern compute and AI workload. NVIDIA throttled FMA throughput to approximately 0.39 TFLOPS — slower than a GPU from 2008, and slower than a modern multi-core CPU. The card's theoretical FP32 ceiling without this restriction would be around 25 TFLOPS, comparable to an A100.
+The most significant is the **FP32 FMA throttle**. FMA (Fused Multiply-Add) is the instruction at the heart of virtually every modern compute and AI workload. NVIDIA throttled FMA throughput to approximately 0.39 TFLOPS — slower than a GPU from 2008, and slower than a modern multi-core CPU. The card's theoretical FP32 ceiling without this restriction would be around 12.63 TFLOPS (for the 10GB variant).
 
 The **PCIe interface** is restricted in two independent ways: a firmware-level lock to PCIe Gen 1 speed, and a hardware-level PCB modification where the AC coupling capacitors for 12 of the 16 PCIe lanes have been omitted, forcing a link downgrade to x4 width. The combined result is approximately 1 GB/s of PCIe bandwidth instead of the 64 GB/s a full PCIe 4.0 x16 connection would provide.
 

@@ -33,7 +33,7 @@ The SM speed-select system uses 3-bit values (0-7) to represent throttle levels:
 | 0x0 | Unrestricted | Full performance (A100, datacenter) |
 | 0x1 | Light throttle | Partial throttle (consumer GeForce) |
 | 0x2–0x4 | Medium throttle | Progressive restriction |
-| **0x5** | **Heavy throttle** | **FMA/FP32 at 1/50th throughput (CMP)** |
+| **0x5** | **Heavy throttle** | **FMA/FP32 at 1/32nd throughput (CMP)** |
 | 0x6–0x7 | Reserved | Not used in production |
 
 **Affected Fuses (9 total):**

@@ -17,7 +17,7 @@ The CMP 170HX and the A100 PCIe 40GB share the same GA100 die, the same PCB layo
 | Base Clock                | 1,140 MHz                        | 765 MHz            | 765 MHz        |
 | Boost Clock               | 1,410 MHz                        | 1,410 MHz          | 1,410 MHz      |
 | Max Clock                 | 1,695 MHz                        | 1,410 MHz          | 1,410 MHz      |
-| FP32 (theoretical)        | 25 TFLOPS                        | 19.5 TFLOPS        | 19.5 TFLOPS    |
+| FP32 (theoretical)        | 12.63 TFLOPS                     | 19.5 TFLOPS        | 19.5 TFLOPS    |
 | FP32 (actual, FMA)        | 0.39 TFLOPS                      | 19.5 TFLOPS        | 19.5 TFLOPS    |
 | FP32 (actual, no FMA)     | 6.25 TFLOPS                      | 19.5 TFLOPS        | 19.5 TFLOPS    |
 | FP16                      | 42 TFLOPS                        | 312 TFLOPS         | 312 TFLOPS     |
@@ -45,7 +45,7 @@ The CMP 170HX and the A100 PCIe 40GB share the same GA100 die, the same PCB layo
 
 **CUDA Cores (3,584–4,480 vs 6,912)** The GA100 die contains 128 streaming multiprocessors in its full configuration. The A100 enables 108 of these, and the CMP 170HX exists in multiple hardware variants: the 10GB variant enables 70 SMs (4,480 CUDA cores), while the 8GB variant enables 56 SMs (3,584 CUDA cores). The disabled SMs contain the additional CUDA and tensor cores. This is standard chip binning — dies that don't meet the quality threshold for full A100 production are sold at a lower tier with fewer active cores. This was not done specifically to cripple the CMP; it reflects where these chips sit in NVIDIA's production yield hierarchy.
 
-**FP32 FMA Throttling (0.39 TFLOPS vs 19.5 TFLOPS)** This is the most aggressive and deliberate restriction. Fused Multiply-Add is the core instruction used in virtually every compute workload — machine learning training and inference, physics simulation, rendering, scientific computing. NVIDIA throttled FMA throughput to approximately 1/50th of what the hardware is capable of. Crucially, this throttling is applied at the driver or firmware level, not by disabling hardware. Non-FMA FP32 operations run at 6.25 TFLOPS, and the hardware clearly has far more compute capacity that is being artificially suppressed.
+**FP32 FMA Throttling (0.39 TFLOPS vs 12.63 TFLOPS)** This is the most aggressive and deliberate restriction. Fused Multiply-Add is the core instruction used in virtually every compute workload — machine learning training and inference, physics simulation, rendering, scientific computing. NVIDIA throttled FMA throughput to approximately 1/32nd of what the hardware is capable of. Crucially, this throttling is applied at the driver or firmware level, not by disabling hardware. Non-FMA FP32 operations run at 6.25 TFLOPS, and the hardware clearly has far more compute capacity that is being artificially suppressed.
 
 The reasoning is straightforward: Ethereum's Ethash algorithm is memory-bound and integer-heavy, not FMA-heavy. Throttling FMA made the card useless for every workload except mining without affecting its mining performance at all.
 

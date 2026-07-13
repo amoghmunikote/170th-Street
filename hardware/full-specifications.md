@@ -58,7 +58,7 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 
 | Metric                        | Theoretical  | Actual (measured)           |
 | ----------------------------- | ------------ | --------------------------- |
-| FP32 (with FMA)               | 25.27 TFLOPS | **0.39 TFLOPS** (throttled) |
+| FP32 (with FMA)               | 12.63 TFLOPS | **0.39 TFLOPS** (throttled) |
 | FP32 (without FMA)            | —            | 6.25 TFLOPS                 |
 | FP16                          | \~42 TFLOPS  | \~42 TFLOPS (unthrottled)   |
 | FP64 (with FMA)               | —            | 0.18 TFLOPS (throttled)     |

@@ -22,9 +22,9 @@ Pricing has been fairly stable in the $200–400 range since mid-2023. Cards hav
 
 The CMP 170HX comes in two memory configurations that are occasionally confused in listings:
 
-The **8GB HBM2e** version is the original and most common. This is the card documented throughout this GitBook — GA100-105F die, 4,480 CUDA cores, 4096-bit bus, 1,493 GB/s bandwidth.
+The **8GB HBM2e** version is the original and most common. This is the card documented throughout this GitBook — GA100-105F die, 3,584 CUDA cores (56 SMs), 4,096-bit memory bus, 1,493 GB/s bandwidth.
 
-Some listings advertise a **10GB HBM2e** variant. Be skeptical of these — the 10GB figure appears in some third-party spec databases but is not well documented. Verify what you're buying before purchasing.
+Some listings advertise a **10GB HBM2e** variant, which is a confirmed production variant with 4,480 CUDA cores (70 SMs), 5,120-bit memory bus, and approximately 1,865 GB/s bandwidth. Verify the actual VRAM and core count in your listing before purchasing.
 
 When evaluating a listing, look for:
 

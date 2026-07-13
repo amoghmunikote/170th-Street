@@ -19,7 +19,7 @@ Without functional FMA, virtually every piece of existing compute software runs 
 
 **What NVIDIA Did**
 
-NVIDIA throttled FMA instruction throughput on the CMP 170HX to approximately **0.39 TFLOPS** — about 1/64th of the hardware's theoretical FP32 FMA ceiling of 25 TFLOPS. This throttle is applied at the driver or firmware level. The hardware cores are physically present and functional — non-FMA FP32 operations run at 6.25 TFLOPS on the same hardware.
+NVIDIA throttled FMA instruction throughput on the CMP 170HX to approximately **0.39 TFLOPS** — about 1/32nd of the hardware's theoretical FP32 FMA ceiling of 12.63 TFLOPS. This throttle is applied at the driver or firmware level. The hardware cores are physically present and functional — non-FMA FP32 operations run at 6.25 TFLOPS on the same hardware.
 
 The throttle applies to both FP32 FMA (0.39 TFLOPS) and FP64 FMA (0.18 TFLOPS). FP16 operations are not throttled and run at their full \~42 TFLOPS. INT32 operations are not throttled and run at 12.5 TIOPS.
 
