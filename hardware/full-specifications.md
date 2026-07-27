@@ -42,7 +42,7 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 
 **Performance (Theoretical vs Actual)**
 
-<table><thead><tr><th width="222">Metric</th><th width="256">Original</th><th width="255">Actual (measured)</th></tr></thead><tbody><tr><td>FP64</td><td>0.19 TLFOPS/s</td><td>6.44 TFLOPS/s</td></tr><tr><td>FP32</td><td>0.41 TLFOPS/s</td><td>12.99 TFLOPS/s</td></tr><tr><td>FP16</td><td>49.05 TFLOPS/s</td><td>49.05 TFLOPS/s</td></tr><tr><td>INT64</td><td>2.52 TFLOPS/s</td><td>2.52 TFLOPS/s</td></tr><tr><td>INT32</td><td>12.99 TFLOPS/s</td><td>12.99 TFLOPS/s</td></tr><tr><td>INT16</td><td>11.94 TFLOPS/s</td><td>11.94 TFLOPS/s</td></tr><tr><td>INT8</td><td>1.64 TFLOPS/s</td><td>48.03 TFLOPS/s</td></tr></tbody></table>
+<table><thead><tr><th width="222">Metric</th><th width="256">Original</th><th width="255">Unlocked</th></tr></thead><tbody><tr><td>FP64</td><td>0.19 TLFOPS/s</td><td>6.44 TFLOPS/s</td></tr><tr><td>FP32</td><td>0.41 TLFOPS/s</td><td>12.99 TFLOPS/s</td></tr><tr><td>FP16</td><td>49.05 TFLOPS/s</td><td>49.05 TFLOPS/s</td></tr><tr><td>INT64</td><td>2.52 TFLOPS/s</td><td>2.52 TFLOPS/s</td></tr><tr><td>INT32</td><td>12.99 TFLOPS/s</td><td>12.99 TFLOPS/s</td></tr><tr><td>INT16</td><td>11.94 TFLOPS/s</td><td>11.94 TFLOPS/s</td></tr><tr><td>INT8</td><td>1.64 TFLOPS/s</td><td>48.03 TFLOPS/s</td></tr></tbody></table>
 
 **Connectivity**
 
