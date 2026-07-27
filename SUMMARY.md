@@ -10,7 +10,6 @@
 ## Hardware
 
 * [Full Specifications](hardware/full-specifications.md)
-* [What NVIDIA Removed](hardware/what-nvidia-removed.md)
 * [Teardown Guide](hardware/teardown-guide.md)
 * [Leaked NVIDIA A100 Schematic](hardware/leaked-nvidia-a100-schematic.md)
 
