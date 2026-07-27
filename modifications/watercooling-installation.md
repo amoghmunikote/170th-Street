@@ -16,15 +16,6 @@ The recommended waterblock is the **Bykski N-TESLA-A100-X-V2**. This is the only
 
 ⚠️ **Do not confuse with the N-TESLA-A100-80G-X-V2** — that is for the A100 80GB and is a different, incompatible PCB layout. ⚠️ **Avoid the non-V2 version** — the older model uses acrylic construction which is less durable. The V2 uses all-metal construction.
 
-**Where to Buy**
-
-| Source     | Price    | Notes                                                         |
-| ---------- | -------- | ------------------------------------------------------------- |
-| AliExpress | $100–150 | Recommended — significantly cheaper than Western distributors |
-| FormulaMod | \~$140   | Ships internationally                                         |
-| Bykski.us  | \~$300   | US stock but significantly overpriced vs AliExpress           |
-| Newegg     | \~$250   | Available via third-party sellers                             |
-
 **What's in the Box**
 
 * Full coverage GPU waterblock (nickel-plated copper + stainless steel)
@@ -89,14 +80,6 @@ Align the PCIe bracket on the left side of the PCB, then place the backplate on 
 <figure><img src="https://niconiconi.neocities.org/img/nvidia-cmp-170hx-review/cmp-170hx-watercool-3.jpg" alt=""><figcaption></figcaption></figure>
 
 **Step 14 — Connect to Your Water Loop** Connect the waterblock into your water cooling loop using standard G1/4 fittings. Before filling with coolant, pressure test the loop for at least 15 minutes to verify air tightness.
-
-**Temperature Results**
-
-Using a 360mm 3-fan radiator at minimum fan speed:
-
-* Idle (30W): \~30°C
-* FluidX3D FP32/FP16S with FMA disabled (180W): \~45°C
-* Estimated at higher workloads: \~50–55°C
 
 **Warning on Thermal Runaway**
 
