@@ -13,6 +13,10 @@
 * [Teardown Guide](hardware/teardown-guide.md)
 * [Leaked NVIDIA A100 Schematic](hardware/leaked-nvidia-a100-schematic.md)
 
+## Unlock
+
+* [Current Unlock](unlock/current-unlock.md)
+
 ## Modifications
 
 * [PCIe Capacitor Mod](modifications/pcie-capacitor-mod.md)
