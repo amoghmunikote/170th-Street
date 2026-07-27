@@ -6,64 +6,43 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 
 **General**
 
-| Property              | Value                                     |
-| --------------------- | ----------------------------------------- |
-| Model                 | NVIDIA CMP 170HX                          |
-| GPU Die               | GA100-105F-A1                             |
-| Architecture          | NVIDIA Ampere                             |
-| Manufacturing Process | TSMC 7nm N7 FinFET                        |
-| Transistors           | 54.2 billion                              |
-| Die Size              | 826 mm²                                   |
-| **PCI Device ID**     | **0x20C2 (primary) / 0x2082 (variant)**   |
-| **PCI Subsystem ID**  | **0x1585 (8GB/) / 0x1557 (10GB)**         |
-| Release Date          | September 1, 2021                         |
-| Original MSRP         | $4,299 USD                                |
-| Form Factor           | Dual-slot PCIe add-in card                |
-| Cooling               | Passive (server chassis airflow required) |
-| Display Outputs       | None                                      |
+| Property              | Value                                      |
+| --------------------- | ------------------------------------------ |
+| Model                 | NVIDIA CMP 170HX                           |
+| GPU Die               | GA100-105F-A1 (8GB) / GA100-105A-A1 (10GB) |
+| Architecture          | Ampere                                     |
+| Manufacturing Process | TSMC 7nm N7 FinFET                         |
+| Transistors           | 54.2 billion                               |
+| Die Size              | 826 mm²                                    |
+| **PCI Device ID**     | **0x20C2 (8GB) / 0x2082 (10GB)**           |
+| **PCI Subsystem ID**  | **0x1585 (8GB) / 0x1557 (10GB)**           |
+| Release Date          | September 1, 2021                          |
+| Original MSRP         | $4,299 USD                                 |
+| Form Factor           | Dual-slot PCIe add-in card                 |
+| Cooling               | Passive                                    |
+| Display Outputs       | None                                       |
 
 **Compute**
 
-| Property                  | Value                          |
-| ------------------------- | ------------------------------ |
-| Streaming Multiprocessors | 70                             |
-| CUDA Cores                | 4,480 (64 per SM)              |
-| Tensor Cores              | 280 (4 per SM, 3rd generation) |
-| Texture Units (TMUs)      | 280                            |
-| ROPs                      | 128                            |
-| CUDA Compute Capability   | 8.0                            |
-| Base Clock                | 1,140 MHz                      |
-| Boost Clock               | 1,410 MHz                      |
-| Max Clock (observed)      | 1,695 MHz                      |
-| L1 Cache                  | 192 KB per SM                  |
-| L2 Cache                  | 32,768 KB (32 MB)              |
+| Property                       | Value             |
+| ------------------------------ | ----------------- |
+| Streaming Multiprocessors (SM) | 70                |
+| CUDA Cores                     | 4,480 (64 per SM) |
+| Tensor Cores (3rd Generation)  | 280 (4 per SM)    |
+| Texture Units (TMUs)           | 280               |
+| Render Output Units (ROPs)     | 128               |
+| Base Clock                     | 1140 MHz          |
+| Boost Clock                    | 1410 MHz          |
+| L1 Cache                       | 192 KB per SM     |
+| L2 Cache                       | 32,768 KB (32 MB) |
 
 **Memory**
 
-| Property                       | Value                                                        |
-| ------------------------------ | ------------------------------------------------------------ |
-| Memory Type                    | HBM2e                                                        |
-| Memory Capacity                | 8 GB / 10 GB (16GB theoretically possible but not confirmed) |
-| Memory Bus Width               | 4,096-bit (8GB variant); 5,120-bit (10GB variant)            |
-| Memory Clock                   | 1,458 MHz (729 MHz effective base)                           |
-| Memory Bandwidth (theoretical) | 1,493 GB/s (8GB); \~1,865 GB/s (10GB estimated)              |
-| Memory Bandwidth (measured)    | \~1,355 GB/s (8GB, real-world clpeak)                        |
-| Memory Stacks                  | 2 HBM2e stacks (8GB); 5 HBM2e stacks (10GB variant)          |
-| ECC                            | Disabled                                                     |
-| Resizable BAR                  | Present but limited to 64 MiB                                |
+<table><thead><tr><th>Property</th><th width="367">Value</th></tr></thead><tbody><tr><td>Memory Type</td><td>HBM2e</td></tr><tr><td>Memory Capacity</td><td>8 GB / 10 GB</td></tr><tr><td>Unlocked Memory Capacity</td><td>64GB (8GB) / 40GB (10GB)</td></tr><tr><td>Memory Bus Width</td><td>4,096-bit (8GB) / 5,120-bit (10GB)</td></tr><tr><td>Memory Clock</td><td>1,458 MHz (8GB) / 1215 MHz (10GB)</td></tr><tr><td>Memory Bandwidth (theoretical)</td><td>1.49TB/s (8GB) / 1.56TB/s (10GB)</td></tr><tr><td>ECC</td><td>Disabled</td></tr><tr><td>Resizable BAR</td><td>Present but limited to 64 MiB</td></tr></tbody></table>
 
 **Performance (Theoretical vs Actual)**
 
-| Metric                        | Theoretical  | Actual (measured)           |
-| ----------------------------- | ------------ | --------------------------- |
-| FP32 (with FMA)               | 12.63 TFLOPS | **0.39 TFLOPS** (throttled) |
-| FP32 (without FMA)            | —            | 6.25 TFLOPS                 |
-| FP16                          | \~42 TFLOPS  | \~42 TFLOPS (unthrottled)   |
-| FP64 (with FMA)               | —            | 0.18 TFLOPS (throttled)     |
-| FP64 (without FMA)            | —            | 0.094 TFLOPS                |
-| INT32                         | —            | 12.5 TIOPS (unthrottled)    |
-| Tensor Core (TF32 via cuBLAS) | —            | \~6.2 TFLOPS                |
-| Memory Bandwidth              | 1,493 GB/s   | \~1,355 GB/s                |
+<table><thead><tr><th width="222">Metric</th><th width="256">Original</th><th width="255">Actual (measured)</th></tr></thead><tbody><tr><td>FP64</td><td>0.19 TLFOPS/s</td><td>6.44 TFLOPS/s</td></tr><tr><td>FP32</td><td>0.41 TLFOPS/s</td><td>12.99 TFLOPS/s</td></tr><tr><td>FP16</td><td>49.05 TFLOPS/s</td><td>49.05 TFLOPS/s</td></tr><tr><td>INT64</td><td>2.52 TFLOPS/s</td><td>2.52 TFLOPS/s</td></tr><tr><td>INT32</td><td>12.99 TFLOPS/s</td><td>12.99 TFLOPS/s</td></tr><tr><td>INT16</td><td>11.94 TFLOPS/s</td><td>11.94 TFLOPS/s</td></tr><tr><td>INT8</td><td>1.64 TFLOPS/s</td><td>48.03 TFLOPS/s</td></tr></tbody></table>
 
 **Connectivity**
 
@@ -71,29 +50,17 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 | --------------------------- | ---------------------------------------------- |
 | PCIe Interface (physical)   | x16 slot                                       |
 | PCIe Interface (electrical) | Gen 1 x4 (firmware locked)                     |
-| PCIe Bandwidth              | \~1 GB/s (0.85 GB/s measured)                  |
+| PCIe Bandwidth              | \~1 GB/s                                       |
 | NVLink                      | Physical connectors present, disabled via fuse |
 | Power Connector             | 1× 8-pin CPU power connector (via adapter)     |
 
 **Power**
 
-| Property                             | Value      |
-| ------------------------------------ | ---------- |
-| TDP (default)                        | 250W       |
-| Max Power Limit (software)           | 300W       |
-| Idle Power (typical)                 | \~30–40W   |
-| Load Power (FMA-throttled workload)  | \~75–100W  |
-| Load Power (integer/memory workload) | \~160–180W |
-| Load Power (non-FMA FP32, FluidX3D)  | \~180W     |
-
-**Memory Latency**
-
-| Property            | Value               | Notes                                                                                      |
-| ------------------- | ------------------- | ------------------------------------------------------------------------------------------ |
-| Engineering Sample  | \~75 ns             | Measured on pre-production hardware                                                        |
-| Production Card     | \~152 ns            | 2× latency vs engineering samples                                                          |
-| Root Cause          | 2-Hi HBM2e stacking | Fewer activated rows, different page buffer geometry                                       |
-| Impact on Inference | Minimal             | Transformers are bandwidth-bound (streaming weights sequentially), not random-access bound |
+| Property                   | Value    |
+| -------------------------- | -------- |
+| TDP (default)              | 250W     |
+| Max Power Limit (software) | 300W     |
+| Idle Power (typical)       | \~30–40W |
 
 **API Support**
 
@@ -104,16 +71,13 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 | DirectX       | ❌ No                           |
 | Vulkan        | ❌ No                           |
 | OpenGL        | ❌ No                           |
-| NvEnc / NvDec | ❌ No                           |
+| NVENC / NVDEC | ❌ No                           |
 
-<figure><img src="https://niconiconi.neocities.org/img/nvidia-cmp-170hx-review/cmp-170hx-pcb-1.jpg" alt=""><figcaption></figcaption></figure>
+<figure><img src="../.gitbook/assets/170HX Board.png" alt=""><figcaption></figcaption></figure>
 
 **Notes on Specification Discrepancies**
 
-The CMP 170HX exists in multiple hardware configurations: **8GB, 10GB, and 16GB variants are confirmed real production cards**, not database errors. These are not merely software differences controlled by firmware; they represent genuine hardware binning variants with different core counts and memory configurations:
+The CMP 170HX exists in multiple hardware configurations: **8GB, and 10GB variants are confirmed real production cards**, not database errors. These are not merely software differences controlled by firmware; they represent genuine hardware binning variants with different core counts and memory configurations:
 
-* **8GB variant:** 56 SMs, 4,096-bit memory bus, 2 HBM2e stacks
-* **10GB variant:** 70 SMs, 5,120-bit memory bus, 5 HBM2e stacks
-* **16GB variant:** Theoretically achievable through die configurations similar to A100 40GB/80GB binning
-
-The 8GB variant was the original NVIDIA 2021 release, and 10GB variants have been verified in circulation. The different core counts (56 vs 70 SMs) indicate these are production binning decisions, not software-controlled limitations. Always verify actual specifications and capacity using `nvidia-smi` and hardware inspection tools on your specific card.
+* **8GB variant:** 56 SMs, 4,096-bit memory bus
+* **10GB variant:** 70 SMs, 5,120-bit memory bus
