@@ -18,12 +18,3 @@
 
 * [PCIe Capacitor Mod](modifications/pcie-capacitor-mod.md)
 * [Watercooling Installation](modifications/watercooling-installation.md)
-
-## AI & ML Workloads
-
-* [The FMA Workaround](ai-and-ml-workloads/the-fma-workaround.md)
-* [LLM Inference with llama.cpp](ai-and-ml-workloads/llm-inference-with-llama.cpp.md)
-* [FluidX3D — CFD Simulation](ai-and-ml-workloads/fluidx3d-cfd-simulation.md)
-* [PyTorch & FP16 Workloads](ai-and-ml-workloads/pytorch-and-fp16-workloads.md)
-* [Physics Simulations — FDTD](ai-and-ml-workloads/physics-simulations-fdtd.md)
-* [What Works and What Doesn't](ai-and-ml-workloads/what-works-and-what-doesnt.md)
