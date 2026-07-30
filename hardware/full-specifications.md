@@ -77,7 +77,7 @@ This page documents every known specification of the NVIDIA CMP 170HX in one pla
 
 **Notes on Specification Discrepancies**
 
-The CMP 170HX exists in multiple hardware configurations: **8GB, and 10GB variants are confirmed real production cards**, not database errors. These are not merely software differences controlled by firmware; they represent genuine hardware binning variants with different core counts and memory configurations:
+The CMP 170HX exists in multiple hardware configurations: **8GB, and 10GB variants are confirmed real production cards**, not database errors. These are not merely software differences controlled by firmware; they represent genuine hardware binning variants with different memory configurations:
 
-* **8GB variant:** 56 SMs, 4,096-bit memory bus
-* **10GB variant:** 70 SMs, 5,120-bit memory bus
+* **8GB variant:** 4,096-bit memory bus
+* **10GB variant:** 5,120-bit memory bus
